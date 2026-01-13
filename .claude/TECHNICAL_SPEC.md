@@ -1,4 +1,4 @@
-# NUNGGU - Technical Specification
+# KITA - Technical Specification
 
 ## System Architecture
 ```
@@ -9,478 +9,254 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   FRONTEND (Next.js + Vercel)                │
-│  - OnchainKit (Wallet)                                       │
+│  - OnchainKit (Smart Wallet)                                 │
 │  - Position Setup UI                                         │
 │  - Cashback Calculator                                       │
-│  - Dashboard                                                 │
+│  - Group Management (Nabung Bareng)                          │
 └─────────────────────────────────────────────────────────────┘
                               │
                 ┌─────────────┴─────────────┐
                 ▼                           ▼
 ┌──────────────────────────┐   ┌───────────────────────────┐
 │  SMART CONTRACTS (Base)  │   │  BACKEND (Bun/Elysia)     │
-│  - NUNGGUVault           │   │  - RFQ Service            │
-│  - Position Management   │   │  - Price Monitor          │
-│  - Premium Distribution  │   │  - AI Optimizer           │
-└──────────────────────────┘   │  - Event Listener         │
-                │              └───────────────────────────┘
+│  - KITAVault             │   │  - Thetanuts API fetch    │
+│  - GroupVault            │   │  - Event Listener         │
+│  - Position Management   │   │  - AI Optimizer           │
+│  - Voting System         │   │                           │
+└──────────────────────────┘   └───────────────────────────┘
                 │                            │
-    ┌───────────┼───────────┬────────────────┘
-    ▼           ▼           ▼
-┌─────────┐ ┌─────────┐ ┌──────────────┐
-│Thetanuts│ │  Aave   │ │  Chainlink   │
-│  V4 RFQ │ │ Lending │ │  Automation  │
-└─────────┘ └─────────┘ └──────────────┘
+    ┌───────────┼───────────────────────────┘
+    ▼           ▼           
+┌─────────┐ ┌─────────┐ 
+│Thetanuts│ │  Aave   │ 
+│ Option  │ │ Lending │ 
+│  Book   │ │  Pool   │ 
+└─────────┘ └─────────┘ 
 ```
 
 ## Smart Contract Architecture
 
-### NUNGGUVault.sol (Main Contract)
+### KITAVault.sol (Solo Investing)
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-interface IThetanutsRFQ {
-    function requestQuote(...) external returns (bytes32 quoteId);
-    function fillQuote(bytes32 quoteId) external;
-}
-
-interface IAave {
-    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
-    function withdraw(address asset, uint256 amount, address to) external;
-}
-
-contract NUNGGUVault is ReentrancyGuard, Ownable {
+contract KITAVault is ReentrancyGuard, Ownable, Pausable {
     
     struct Position {
         address user;
-        uint256 collateral;        // Amount in IDRX
-        uint256 targetPrice;       // Strike price
-        uint256 premiumReceived;   // Cashback amount
-        uint256 expiry;            // Position expiry timestamp
-        bool isActive;             // Position status
-        bool autoRoll;             // Auto-renewal enabled
-        uint256 aaveShares;        // Aave lending shares
+        address optionContract;     // From fillOrder()
+        uint256 collateralAmount;   // USDC deposited
+        uint256 premiumReceived;    // Cashback amount
+        uint256 strikePrice;        // Strike (8 decimals)
+        uint256 expiry;             // Option expiry
+        bool isCall;                // Call or Put
+        bool isLong;                // Buying or Selling
+        bool isActive;              // Position status
+        uint256 aaveShares;         // Aave yield tracking
+        uint256 createdAt;
     }
     
-    mapping(address => Position[]) public userPositions;
-    mapping(bytes32 => Position) public activePositions;
-    
-    IERC20 public IDRX;
-    IThetanutsRFQ public thetanutsRFQ;
-    IAave public aavePool;
-    
-    event PositionCreated(address indexed user, uint256 indexed positionId, uint256 premium);
-    event PositionAssigned(address indexed user, uint256 indexed positionId);
-    event PremiumClaimed(address indexed user, uint256 amount);
-    event YieldClaimed(address indexed user, uint256 amount);
-    
     // Core functions
-    function createPosition(uint256 collateral, uint256 targetPrice, bool autoRoll) external;
-    function claimPremium() external;
-    function claimYield() external;
-    function closePosition(uint256 positionId) external;
-    function enableAutoRoll(uint256 positionId) external;
+    function executeOrder(
+        IOptionBook.Order calldata order,
+        bytes calldata signature,
+        uint256 collateralAmount,
+        uint256 expectedPremium
+    ) external returns (uint256 positionId);
     
-    // Internal functions
-    function _executeRFQ(...) internal;
-    function _depositToAave(...) internal;
-    function _withdrawFromAave(...) internal;
-    function _handleAssignment(...) internal;
-    function _rollPosition(...) internal;
+    function closePosition(uint256 positionId) external;
+    
+    // View functions
+    function getUserPositions(address user) external view returns (Position[] memory);
+    function getActivePositions(address user) external view returns (Position[] memory);
+    function getTotalPremiumEarned(address user) external view returns (uint256);
 }
 ```
 
-### Key Contract Functions
+### GroupVault.sol (Nabung Bareng)
+```solidity
+contract GroupVault is ReentrancyGuard, Pausable {
+    
+    struct Group {
+        string name;
+        address admin;
+        uint256 totalDeposited;
+        uint256 memberCount;       // 2-10 members
+        uint256 createdAt;
+        uint256 streakWeeks;       // Consecutive profitable weeks
+        bool isActive;
+    }
+    
+    enum ProposalType {
+        EXECUTE_STRATEGY,    // Execute Thetanuts order
+        WITHDRAW,           // Withdraw funds
+        ADD_MEMBER,         // Add new member
+        REMOVE_MEMBER,      // Remove member
+        CHANGE_ADMIN        // Change admin
+    }
+    
+    // Group Management
+    function createGroup(string calldata name, uint256 initialDeposit) returns (uint256 groupId);
+    function joinGroup(uint256 groupId, uint256 deposit) external;
+    function deposit(uint256 groupId, uint256 amount) external;
+    
+    // Voting System (48h period, 50%+1 quorum)
+    function createProposal(uint256 groupId, ProposalType, bytes calldata data) returns (uint256);
+    function vote(uint256 proposalId, bool support) external;
+    function executeProposal(uint256 proposalId) external;
+    
+    // View functions
+    function getMemberShare(uint256 groupId, address member) returns (uint256); // Basis points
+    function getGroupPositions(uint256 groupId) returns (GroupPosition[] memory);
+}
+```
 
-**createPosition:**
-1. Validate inputs (collateral > 0, targetPrice reasonable)
-2. Transfer IDRX from user to contract
-3. Deposit IDRX to Aave (yield stacking)
-4. Call Thetanuts RFQ for quote
-5. Execute put sell
-6. Distribute premium to user immediately
-7. Store position data
-8. Emit event
+### IOptionBook.sol (Thetanuts V4 Interface)
+```solidity
+interface IOptionBook {
+    struct Order {
+        address maker;
+        uint256 orderExpiryTimestamp;
+        address collateral;             // USDC/WETH/CBBTC
+        bool isCall;                    // true=call, false=put
+        address priceFeed;              // Chainlink feed
+        address implementation;         // Strategy contract
+        bool isLong;                    // true=buy, false=sell
+        uint256 maxCollateralUsable;
+        uint256[] strikes;              // 8 decimals
+        uint256 expiry;                 // Option expiry
+        uint256 price;                  // Price per contract (8 decimals)
+        uint256 numContracts;           // Number to fill
+        bytes extraOptionData;
+    }
+    
+    function fillOrder(
+        Order calldata order,
+        bytes calldata signature,
+        address referrer
+    ) external returns (address optionAddress);
+    
+    function fees(address token, address referrer) external view returns (uint256);
+    function claimFees(address token) external;
+}
+```
 
-**handleAssignment (when ETH hits target):**
-1. Thetanuts triggers assignment
-2. Withdraw from Aave
-3. Execute buy (swap IDRX for ETH)
-4. Transfer ETH to user
-5. Close position
-6. Emit event
+## Key Contract Functions
 
-**rollPosition (auto-roll):**
-1. Chainlink Keeper triggers on expiry
-2. Check if position expired without assignment
-3. Check if autoRoll enabled
-4. Withdraw from Aave (keep yield)
-5. Create new position with same parameters
-6. Emit event
+**KITAVault.executeOrder Flow:**
+1. Validate inputs (collateral >= minCollateral)
+2. Transfer USDC from user to vault
+3. Approve OptionBook to spend USDC
+4. Call `optionBook.fillOrder(order, signature, referrer)` - **DO NOT modify order!**
+5. Calculate premium: `price * numContracts / 1e8`
+6. Deduct platform fee (5%)
+7. Deposit remaining collateral to Aave for yield
+8. Store position data
+9. Transfer net premium to user (instant cashback)
+10. Emit `PositionCreated` event
+
+**GroupVault.createProposal + executeProposal Flow:**
+1. Member creates proposal with encoded data
+2. 48-hour voting period starts
+3. Members vote (each member = 1 vote)
+4. After deadline, if quorum (50%+1) reached and votesFor > votesAgainst
+5. Execute proposal (e.g., call `_executeStrategy()`)
 
 ## Backend Services
 
-### RFQ Service (`/services/rfq_service.py`)
-```python
-from web3 import Web3
-import requests
-
-class RFQService:
-    def __init__(self, thetanuts_api_key: str):
-        self.api_url = "https://api.thetanuts.finance/v4/rfq"
-        self.api_key = thetanuts_api_key
-        
-    async def get_quote(
-        self,
-        underlying: str,  # e.g., "ETH"
-        strike_price: float,
-        expiry: int,  # Unix timestamp
-        size: float,  # Collateral amount
-    ) -> dict:
-        """
-        Request quote from Thetanuts market makers.
-        Returns: {
-            "quoteId": "0x123...",
-            "premium": 427500,  # in IDRX
-            "fee": 1000,
-            "total": 426500
-        }
-        """
-        payload = {
-            "type": "PUT",
-            "underlying": underlying,
-            "strike": strike_price,
-            "expiry": expiry,
-            "collateral": size,
-            "currency": "IDRX"
-        }
-        
-        response = requests.post(
-            self.api_url,
-            json=payload,
-            headers={"Authorization": f"Bearer {self.api_key}"}
-        )
-        
-        return response.json()
-        
-    async def execute_quote(self, quote_id: str, user_address: str):
-        """Execute the quote onchain via smart contract."""
-        # Call NUNGGUVault.executeRFQ(quote_id)
-        pass
-```
-
-### Price Monitor (`/services/price_monitor.py`)
-```python
-from web3 import Web3
-import asyncio
-
-class PriceMonitor:
-    def __init__(self, chainlink_feed_address: str):
-        self.feed = chainlink_feed_address
-        self.w3 = Web3(Web3.HTTPProvider("https://mainnet.base.org"))
-        
-    async def get_current_price(self, asset: str) -> float:
-        """Get current price from Chainlink oracle."""
-        # Read from Chainlink price feed
-        # Return price in IDRX terms
-        pass
-        
-    async def monitor_positions(self):
-        """
-        Continuously monitor active positions.
-        Alert when price approaching target.
-        """
-        while True:
-            positions = await self.get_active_positions()
-            current_price = await self.get_current_price("ETH")
-            
-            for pos in positions:
-                if abs(current_price - pos.targetPrice) / current_price < 0.02:
-                    # Price within 2% of target
-                    await self.send_alert(pos.user, "Price approaching target!")
-                    
-            await asyncio.sleep(60)  # Check every minute
-```
-
-### AI Optimizer (`/services/ai_optimizer.py`)
-```python
-class AIOptimizer:
-    def suggest_optimal_strike(
-        self,
-        current_price: float,
-        user_budget: float,  # Max premium willing to pay
-        risk_tolerance: str,  # "low", "medium", "high"
-    ) -> dict:
-        """
-        Suggest optimal strike price for best risk/reward.
-        
-        Returns: {
-            "suggested_strike": 39500000,
-            "expected_premium": 450000,
-            "assignment_probability": 0.35,
-            "reasoning": "Strike 1.5% below current gives 2x premium..."
-        }
-        """
-        
-        # Simple heuristic (no ML needed for MVP):
-        # - Lower strike = higher premium but higher assignment risk
-        # - Higher strike = lower premium but safer
-        
-        strikes = [
-            current_price * 0.95,  # 5% below
-            current_price * 0.97,  # 3% below
-            current_price * 0.99,  # 1% below
-        ]
-        
-        quotes = []
-        for strike in strikes:
-            quote = await self.rfq_service.get_quote(
-                "ETH", strike, expiry=7*24*3600, size=user_budget
-            )
-            quotes.append(quote)
-            
-        # Rank by premium amount
-        best = max(quotes, key=lambda q: q['premium'])
-        
-        return {
-            "suggested_strike": best['strike'],
-            "expected_premium": best['premium'],
-            "reasoning": f"Optimal balance of {best['premium']/user_budget:.2%} premium..."
-        }
-```
-
-## Frontend Components
-
-### Key Pages/Components
-```
-/app
-├── page.tsx                 # Landing page
-├── app/
-│   ├── layout.tsx          # Root layout (wallet provider)
-│   ├── dashboard/
-│   │   └── page.tsx        # User dashboard (positions, earnings)
-│   ├── create/
-│   │   └── page.tsx        # Create position flow
-│   └── api/
-│       ├── rfq/route.ts    # Proxy to backend RFQ
-│       └── positions/route.ts
-├── components/
-│   ├── WalletConnect.tsx   # OnchainKit wallet button
-│   ├── PositionSetup.tsx   # Main position creation form
-│   ├── CashbackCalculator.tsx  # Real-time premium calculator
-│   ├── PositionCard.tsx    # Display active position
-│   └── YieldDisplay.tsx    # Show Aave interest
-```
-
-### Critical Component: CashbackCalculator
+### Thetanuts Order Fetcher
 ```typescript
-'use client';
+// src/services/thetanuts.ts
+const THETANUTS_API = "https://round-snowflake-9c31.devops-118.workers.dev/";
 
-import { useState, useEffect } from 'react';
-import { formatUnits, parseUnits } from 'viem';
+export async function fetchOrders() {
+  const response = await axios.get(THETANUTS_API);
+  return response.data.data.orders;
+}
 
-export function CashbackCalculator() {
-  const [targetPrice, setTargetPrice] = useState(40000000); // 40M IDRX
-  const [collateral, setCollateral] = useState(40000000);
-  const [premium, setPremium] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchPremium = async () => {
-      setLoading(true);
-      
-      // Call backend RFQ service
-      const response = await fetch('/api/rfq/quote', {
-        method: 'POST',
-        body: JSON.stringify({ targetPrice, collateral })
-      });
-      
-      const data = await response.json();
-      setPremium(data.premium);
-      setLoading(false);
-    };
-    
-    // Debounce: only fetch after user stops adjusting
-    const timer = setTimeout(fetchPremium, 500);
-    return () => clearTimeout(timer);
-  }, [targetPrice, collateral]);
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <label>Target Harga ETH</label>
-        <input
-          type="range"
-          min={35000000}
-          max={45000000}
-          step={100000}
-          value={targetPrice}
-          onChange={(e) => setTargetPrice(Number(e.target.value))}
-        />
-        <p className="text-2xl">{targetPrice.toLocaleString('id-ID')} IDRX</p>
-      </div>
-      
-      <div className="bg-green-100 p-6 rounded-lg">
-        <p className="text-sm text-gray-600">Cashback Instant</p>
-        {loading ? (
-          <p className="text-3xl animate-pulse">Calculating...</p>
-        ) : (
-          <p className="text-4xl font-bold text-green-600">
-            +{premium.toLocaleString('id-ID')} IDRX
-          </p>
-        )}
-      </div>
-    </div>
-  );
+// Filter for selling PUTs (what KITA needs)
+export async function fetchPutSellOrders() {
+  const orders = await fetchOrders();
+  return orders.filter(o => !o.order.isCall && !o.order.isLong);
 }
 ```
 
-## Integration Checklist
+### Event Listener
+```typescript
+// src/services/listener.ts
+const PositionCreatedAbi = parseAbiItem(
+  'event PositionCreated(address indexed user, uint256 indexed positionId, ...)'
+);
 
-### Thetanuts V4
-- [ ] Get API key from Thetanuts team
-- [ ] Test RFQ endpoint on testnet
-- [ ] Understand quote structure
-- [ ] Implement FillQuote execution
-- [ ] Handle settlement callbacks
-- [ ] Test with real market makers
+client.watchEvent({
+  address: KITA_VAULT_ADDRESS,
+  event: PositionCreatedAbi,
+  onLogs: (logs) => {
+    // Save to DB, notify user, etc.
+  }
+});
+```
 
-### Aave
-- [ ] Find IDRX pool on Base (or use USDC)
-- [ ] Get aToken contract address
-- [ ] Test supply/withdraw flow
-- [ ] Calculate interest accrual
-- [ ] Handle edge case (pool full)
+## Frontend Integration
 
-### Chainlink
-- [ ] Setup Keeper for auto-roll
-- [ ] Register upkeep contract
-- [ ] Fund LINK for automation
-- [ ] Test keeper triggers
-- [ ] Get ETH/USD price feed
+### Execute Order Flow
+```typescript
+// 1. Fetch order from backend
+const orders = await fetch('/api/orders/puts').then(r => r.json());
+const selectedOrder = orders[0];
 
-### Base / Paymaster
-- [ ] Deploy contracts to Base Sepolia
-- [ ] Setup Paymaster (Coinbase)
-- [ ] Test gasless transactions
-- [ ] Verify OnchainKit integration
-- [ ] Deploy to Base Mainnet
+// 2. Approve USDC
+await usdc.approve(KITA_VAULT_ADDRESS, collateralAmount);
 
-### IDRX
-- [ ] Get IDRX contract address on Base
-- [ ] Verify decimals (18)
-- [ ] Test transfers
-- [ ] Setup approve/transferFrom flow
-- [ ] Get IDRX/USDC swap route (if needed)
+// 3. Execute order
+await kitaVault.executeOrder(
+  selectedOrder.order,
+  selectedOrder.signature,
+  collateralAmount,
+  expectedPremium
+);
+```
 
-## Deployment Strategy
+## Contract Addresses
 
-### Testnet (Base Sepolia)
-1. Deploy NUNGGUVault.sol
-2. Initialize with testnet addresses:
-   - IDRX: [testnet address]
-   - Thetanuts: [testnet RFQ]
-   - Aave: [testnet pool]
-3. Test all functions with small amounts
-4. Verify gasless UX works
-5. Run integration tests
-
-### Mainnet (Base)
-1. Audit contracts (minimal, hackathon-grade)
-2. Deploy to Base mainnet
-3. Initialize with mainnet addresses
-4. Transfer ownership to multisig (optional)
-5. Verify on BaseScan
-6. Test with real small positions ($10-$50)
-7. Monitor for 24 hours
-8. If stable, announce to beta users
-
-## Error Handling
-
-### Common Issues & Solutions
-
-**Issue:** RFQ returns no quotes
-**Solution:** Fallback to Thetanuts vault (passive strategy)
-
-**Issue:** Aave pool at capacity
-**Solution:** Skip yield stacking, just hold IDRX
-
-**Issue:** Chainlink Keeper not triggering
-**Solution:** Manual cron job as backup
-
-**Issue:** User's IDRX balance insufficient
-**Solution:** Show clear error: "Insufficient balance. Need X IDRX"
-
-**Issue:** Gas estimation fails
-**Solution:** Use fixed gas limits (don't estimate dynamically)
+### Base Mainnet
+| Contract | Address |
+|----------|---------|
+| Thetanuts OptionBook | `0xd58b814C7Ce700f251722b5555e25aE0fa8169A1` |
+| USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| Aave Pool | `0xA238Dd80C259a72e81d7e4664a9801593F98d1c5` |
+| KITAVault | TBD |
+| GroupVault | TBD |
 
 ## Security Considerations
 
-### Smart Contract
-- Use ReentrancyGuard for all state-changing functions
-- Validate all inputs (no zero amounts, reasonable prices)
-- Use SafeERC20 for token transfers
-- Add emergency pause function (owner only)
-- Test for integer overflow (use Solidity 0.8+)
-
-### Backend
-- Rate limit API endpoints (prevent DoS)
-- Validate all user inputs
-- Use environment variables for secrets
-- Don't log sensitive data (private keys, API keys)
-- Setup CORS properly (only allow frontend origin)
-
-### Frontend
-- Never expose private keys in client code
-- Validate all inputs client-side (UX) AND server-side (security)
-- Use HTTPS only (no HTTP)
-- Sanitize user inputs (prevent XSS)
-- Show clear warnings for risky actions
-
-## Performance Optimization
-
 ### Smart Contracts
-- Use indexed events (faster queries)
-- Batch operations where possible
-- Minimize storage writes (expensive)
-- Use view functions for reads (free)
+- ✅ ReentrancyGuard on all state-changing functions
+- ✅ Pausable for emergency stops
+- ✅ SafeERC20 for token transfers
+- ✅ Input validation (min collateral, valid addresses)
+- ✅ Try/catch for external calls (Aave)
+- ⚠️ Order passed unmodified (signature verification)
 
 ### Backend
-- Cache RFQ quotes (30 second TTL)
-- Use connection pooling for database
-- Implement rate limiting
-- Use CDN for static assets
+- Rate limit API endpoints
+- Validate all inputs
+- Use environment variables for secrets
+- Setup CORS properly
 
-### Frontend
-- Code splitting (lazy load routes)
-- Optimize images (WebP, proper sizing)
-- Debounce user inputs (RFQ calls)
-- Use React.memo for expensive components
-- Implement virtual scrolling for long lists
+## Deployment Commands
 
-## Monitoring & Analytics
+```bash
+# Compile
+npx hardhat compile
 
-### What to Track
-- Total positions created
-- Total premiums distributed
-- Average premium amount
-- Assignment rate (how often users get assets)
-- Auto-roll engagement (% users enabling)
-- Yield earned from Aave
-- User retention (D1, D7, D30)
-- Transaction success rate
-- Average response time (RFQ calls)
+# Test
+npx hardhat test
 
-### Tools
-- **Smart Contracts:** The Graph (subgraph for events)
-- **Backend:** Sentry (error tracking), Prometheus (metrics)
-- **Frontend:** Vercel Analytics, PostHog (user behavior)
-- **Blockchain:** Tenderly (transaction monitoring)
+# Deploy to Base Mainnet
+npx hardhat run scripts/deploy-kita.ts --network base
+
+# Verify on BaseScan
+npx hardhat verify --network base <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
+```
 
 ---
 
