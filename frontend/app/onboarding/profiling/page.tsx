@@ -97,8 +97,8 @@ export default function AIProfilingPage() {
             <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center mb-4 animate-pulse">
               <span className="text-4xl">🤖</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Menganalisis Profil Kamu...</h2>
-            <p className="text-gray-600">AI kami sedang menyesuaikan strategi terbaik untuk kamu</p>
+            <h2 className="text-subheading text-gray-800 mb-2">Menganalisis Profil Kamu...</h2>
+            <p className="text-body text-gray-600">AI kami sedang menyesuaikan strategi terbaik untuk kamu</p>
           </div>
           <div className="flex justify-center gap-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -113,21 +113,13 @@ export default function AIProfilingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8">
-        <button
-          onClick={() => currentQuestion > 0 && setCurrentQuestion(currentQuestion - 1)}
-          className="text-gray-600 hover:text-gray-800 mb-6 flex items-center"
-          disabled={currentQuestion === 0}
-        >
-          <span className="text-xl mr-2">←</span> Kembali
-        </button>
-
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-body text-gray-600">
               Pertanyaan {currentQuestion + 1} dari {QUESTIONS.length}
             </span>
-            <span className="text-sm font-medium text-blue-600">{Math.round(progress)}%</span>
+            <span className="text-body text-blue-600">{Math.round(progress)}%</span>
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
@@ -140,10 +132,10 @@ export default function AIProfilingPage() {
         {/* Question */}
         <div className="mb-8">
           <div className="inline-block px-4 py-2 bg-blue-50 rounded-full mb-4">
-            <span className="text-blue-600 text-sm font-semibold">🤖 AI Profiling</span>
+            <span className="text-blue-600 text-body">🤖 AI Profiling</span>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">{question.question}</h2>
-          <p className="text-gray-600">Pilih jawaban yang paling sesuai dengan kondisi kamu</p>
+          <h2 className="text-heading text-gray-800 mb-2">{question.question}</h2>
+          <p className="text-body text-gray-600">Pilih jawaban yang paling sesuai dengan kondisi kamu</p>
         </div>
 
         {/* Options */}
@@ -161,7 +153,7 @@ export default function AIProfilingPage() {
               <div className="flex items-center gap-4">
                 <div className="text-4xl">{option.emoji}</div>
                 <div className="flex-1">
-                  <div className="text-lg font-semibold text-gray-800">{option.label}</div>
+                  <div className="text-subheading text-gray-800">{option.label}</div>
                 </div>
                 <div
                   className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
@@ -187,7 +179,7 @@ export default function AIProfilingPage() {
 
         {/* Helper Text */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-body text-gray-500">
             Informasi ini membantu kami memberikan rekomendasi strategi yang tepat untuk kamu
           </p>
         </div>
