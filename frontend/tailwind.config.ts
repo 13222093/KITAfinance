@@ -15,6 +15,7 @@ const config: Config = {
         'body': ['16px', { lineHeight: '20px', fontWeight: '400' }],
         'subheading': ['20px', { lineHeight: '24px', fontWeight: '600' }],
         'heading': ['23px', { lineHeight: '27px', fontWeight: '700' }],
+        'ultra-heading': ['32px', { lineHeight: '38px', fontWeight: '800' }],
         'button': ['18px', { lineHeight: '22px', fontWeight: '600' }],
       },
       colors: {

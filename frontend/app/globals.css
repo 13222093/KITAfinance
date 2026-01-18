@@ -22,6 +22,9 @@ body {
 
 @layer components {
   /* Typography System */
+  .ultra-heading {
+    @apply text-[32px] font-extrabold leading-snug;
+  }
   .heading {
     @apply text-[23px] font-bold leading-tight;
   }
