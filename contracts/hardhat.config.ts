@@ -1,4 +1,5 @@
 import type { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox"; // <--- INI BARIS YANG TADI HILANG!
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -15,17 +16,14 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      type: "edr-simulated",
       chainId: 31337,
     },
     baseSepolia: {
-      type: "http",
       url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 84532,
     },
     base: {
-      type: "http",
       url: process.env.BASE_MAINNET_RPC_URL || "https://mainnet.base.org",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 8453,
@@ -33,8 +31,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      baseSepolia: process.env.BASESCAN_API_KEY || "",
-      base: process.env.BASESCAN_API_KEY || "",
+      baseSepolia: process.env.BASESCAN_API_KEY || "PLACEHOLDER_KEY",
+      base: process.env.BASESCAN_API_KEY || "PLACEHOLDER_KEY",
     },
     customChains: [
       {
@@ -45,22 +43,11 @@ const config: HardhatUserConfig = {
           browserURL: "https://sepolia.basescan.org",
         },
       },
-      {
-        network: "base",
-        chainId: 8453,
-        urls: {
-          apiURL: "https://api.basescan.org/api",
-          browserURL: "https://basescan.org",
-        },
-      },
     ],
   },
-  paths: {
-    sources: "./contracts",
-    tests: "./test",
-    cache: "./cache",
-    artifacts: "./artifacts",
-  },
+  sourcify: {
+    enabled: true
+  }
 };
 
 export default config;
