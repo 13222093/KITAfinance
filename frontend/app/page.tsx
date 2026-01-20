@@ -217,11 +217,11 @@ export default function Home() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:shadow-blue-500/25 text-white rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110"
+          className="fixed bottom-8 right-8 z-50 w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl hover:shadow-blue-500/25 text-white rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110"
           aria-label="Scroll to top"
         >
           <svg
-            className="w-6 h-6"
+            className="w-10 h-10"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
