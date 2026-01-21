@@ -183,13 +183,6 @@ export default function NabungBareng() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-slate-600/30">
                       <span className="text-sm text-slate-400">Strategi: {group.strategy}</span>
-                      <button
-                        onClick={() => setShowInviteModal(true)}
-                        className="btn-text text-sm px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition-colors flex items-center gap-2"
-                      >
-                        <Share2 className="w-4 h-4" />
-                        Ajak Teman
-                      </button>
                     </div>
                   </Link>
                 );
@@ -263,27 +256,6 @@ export default function NabungBareng() {
                   placeholder="10"
                   className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
-              </div>
-
-              {/* Strategy Selection */}
-              <div>
-                <label className="block text-sm font-semibold text-white mb-2">Pilih Strategi</label>
-                <select className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                  <option>Cash-Secured Put (APY 8.5%)</option>
-                  <option>Covered Call Vault (APY 7.2%)</option>
-                  <option>Diversified Portfolio (APY 9.1%)</option>
-                  <option>Balanced Growth (APY 8.0%)</option>
-                </select>
-              </div>
-
-              {/* Contribution Schedule */}
-              <div>
-                <label className="block text-sm font-semibold text-white mb-2">Jadwal Kontribusi</label>
-                <select className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                  <option>Mingguan</option>
-                  <option>Bulanan</option>
-                  <option>Fleksibel</option>
-                </select>
               </div>
 
               {/* Action Buttons Step 1 */}

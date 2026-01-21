@@ -201,9 +201,9 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-              <button className="text-button w-full mt-6 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all">
+              <Link href="/vaults" className="block text-button w-full mt-6 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all text-center">
                 View All Positions
-              </button>
+              </Link>
             </div>
 
             {/* Recent Activities */}
@@ -244,9 +244,9 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-              <button className="text-button w-full mt-6 py-3 border-2 border-slate-600 text-slate-300 rounded-xl hover:bg-slate-700/30 transition-all">
+              <Link href="/history" className="block text-button w-full mt-6 py-3 border-2 border-slate-600 text-slate-300 rounded-xl hover:bg-slate-700/30 transition-all text-center">
                 View History
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -287,10 +287,18 @@ export default function Dashboard() {
                     High: 'bg-red-500/20 text-red-400',
                   };
 
+                  const strategyLinks: { [key: number]: string } = {
+                    1: '/solo/cash-secured-put',
+                    2: '/solo/covered-call',
+                    3: '/solo/buy-call',
+                    4: '/solo/buy-put',
+                  };
+
                   return (
-                    <button
+                    <Link
                       key={strategy.id}
-                      className="bg-slate-700/30 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-6 hover:bg-slate-700/50 transition-all text-left group"
+                      href={strategyLinks[strategy.id]}
+                      className="bg-slate-700/30 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-6 hover:bg-slate-700/50 transition-all text-left group block"
                     >
                       <div className="flex items-start gap-4 mb-4">
                         <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors ${colorClasses[strategy.color as keyof typeof colorClasses]}`}>
@@ -310,7 +318,7 @@ export default function Dashboard() {
                           Pilih Strategi →
                         </span>
                       </div>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
