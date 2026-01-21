@@ -77,7 +77,7 @@ export function ChatBot() {
     <>
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-4 md:right-8 w-[90vw] md:w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-32 right-4 md:right-8 w-[90vw] md:w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 animate-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
