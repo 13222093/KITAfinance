@@ -1,6 +1,7 @@
 import { parseAbiItem } from 'viem';
 import { publicClient } from '../utils/client';
 import { getCurrentConfig } from '../config';
+import { telegramService } from './telegram.service';
 
 // Simple in-memory store for MVP
 export const recentPositions: any[] = [];
@@ -23,8 +24,12 @@ export const startEventListener = () => {
   const config = getCurrentConfig();
   const kitaVaultAddress = config.contracts.kitaVault as `0x${string}`;
   const groupVaultAddress = config.contracts.groupVault as `0x${string}`;
+  const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
 
   console.log(`👂 Starting Event Listener on ${config.chain.name}...`);
+  
+  // Start Telegram Polling
+  telegramService.startPolling();
 
   // Listener for KITAVault
   if (kitaVaultAddress && !kitaVaultAddress.startsWith("0x0000")) {
@@ -36,6 +41,7 @@ export const startEventListener = () => {
         logs.forEach(log => {
           const args = log.args;
           console.log(`📍 [KITA] New Position: ID ${args.positionId} | User ${args.user}`);
+          
           recentPositions.unshift({
               type: 'POSITION_CREATED',
               txHash: log.transactionHash,
@@ -43,6 +49,11 @@ export const startEventListener = () => {
               timestamp: new Date().toISOString()
           });
           if (recentPositions.length > 100) recentPositions.pop();
+
+          // Notify Telegram
+          if (adminChatId) {
+            telegramService.sendMessage(adminChatId, `🚀 *Posisi Baru Terdeteksi!*\nUser: \`${args.user?.slice(0,6)}...${args.user?.slice(-4)}\`\nCollateral: ${Number(args.collateral)/1e6} USDC\nCashback: ${Number(args.premium)/1e6} USDC`);
+          }
         });
       }
     });
@@ -62,12 +73,17 @@ export const startEventListener = () => {
         logs.forEach(log => {
           const args = log.args;
           console.log(`👥 [GROUP] New Group: ${args.name} (ID: ${args.groupId})`);
+          
           recentGroupEvents.unshift({
               type: 'GROUP_CREATED',
               txHash: log.transactionHash,
               ...args,
               timestamp: new Date().toISOString()
           });
+
+          if (adminChatId) {
+            telegramService.sendMessage(adminChatId, `👥 *Grup Baru Dibuat!*\nNama: ${args.name}\nAdmin: \`${args.admin?.slice(0,6)}...\``);
+          }
         });
       }
     });
@@ -80,12 +96,17 @@ export const startEventListener = () => {
         logs.forEach(log => {
           const args = log.args;
           console.log(`🗳️ [GROUP] New Proposal: ID ${args.proposalId} in Group ${args.groupId}`);
+          
           recentGroupEvents.unshift({
               type: 'PROPOSAL_CREATED',
               txHash: log.transactionHash,
               ...args,
               timestamp: new Date().toISOString()
           });
+
+          if (adminChatId) {
+            telegramService.sendMessage(adminChatId, `🗳️ *Voting Dimulai!*\nProposal ID: ${args.proposalId}\nGrup ID: ${args.groupId}\n\nKetik /vote untuk ikut berpartisipasi!`);
+          }
         });
       }
     });
