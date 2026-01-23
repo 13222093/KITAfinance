@@ -6,6 +6,8 @@ import { positionsRouter } from './routers/positions';
 import { startEventListener } from './services/listener';
 
 const app = new Elysia()
+  // Default CORS: Allow all origins (OK for Hackathon/Dev)
+  // For Prod: .use(cors({ origin: 'https://kita-app.vercel.app' }))
   .use(cors())
   .get('/health', () => ({ status: 'ok', message: 'NUNGGU API (Bun) is running' }))
   .group('/api', (app) => 

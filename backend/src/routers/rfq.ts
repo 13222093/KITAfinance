@@ -21,6 +21,16 @@ export const rfqRouter = new Elysia({ prefix: '/orders' })
     };
   })
 
+  // Explicit alias for cash-secured puts (for frontend clarity)
+  .get('/puts', async () => {
+    const orders = await thetanutsService.fetchPutSellOrders();
+    return {
+      count: orders.length,
+      collateral: 'USDC',
+      orders: orders.map((o: any) => thetanutsService.formatOrderForDisplay(o))
+    };
+  })
+
   // Get orders filtered by asset (BTC or ETH)
   .get('/:asset', async ({ params }) => {
     const asset = params.asset.toUpperCase() as 'BTC' | 'ETH';
