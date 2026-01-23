@@ -23,11 +23,11 @@ backend/
 ├── src/
 │   ├── index.ts            # Elysia app entry
 │   ├── routers/
-│   │   ├── orders.ts       # Thetanuts orders endpoints
+│   │   ├── rfq.ts          # Thetanuts orders endpoints
 │   │   ├── positions.ts    # Position management
 │   │   └── ai.ts           # AI suggestions
 │   ├── services/
-│   │   ├── thetanuts.ts    # Thetanuts V4 API integration
+│   │   ├── rfq.service.ts  # Thetanuts V4 API integration
 │   │   ├── listener.ts     # Blockchain event monitoring
 │   │   └── ai.service.ts   # AI logic
 │   ├── utils/

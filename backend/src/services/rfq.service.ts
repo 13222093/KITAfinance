@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getCurrentConfig } from '../config';
 
 /**
  * Thetanuts V4 Order Service
@@ -15,12 +16,7 @@ import axios from 'axios';
 export class ThetanutsService {
   // Official API endpoints
   private ordersApiUrl = "https://round-snowflake-9c31.devops-118.workers.dev/";
-  private indexerApiUrl = "https://optionbook-indexer.thetanuts.finance/api/v1";
-
-  // Base Mainnet contract addresses
-  private readonly USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-  private readonly OPTION_BOOK = "0xd58b814C7Ce700f251722b5555e25aE0fa8169A1";
-
+  
   /**
    * Fetch all available orders from Thetanuts V4
    * Poll every ~30 seconds and fetch fresh before trade execution
@@ -40,11 +36,12 @@ export class ThetanutsService {
    * This is what KITA needs for "Beli Murah Dapat Cashback"
    */
   async fetchPutSellOrders() {
+    const config = getCurrentConfig();
     const orders = await this.fetchOrders();
     return orders.filter((o: any) =>
       !o.order.isCall &&  // Put option
       !o.order.isLong &&  // Selling (user receives premium)
-      o.order.collateral.toLowerCase() === this.USDC_ADDRESS.toLowerCase()
+      o.order.collateral.toLowerCase() === config.contracts.usdc.toLowerCase()
     );
   }
 
@@ -52,9 +49,12 @@ export class ThetanutsService {
    * Filter orders by asset (BTC or ETH based on priceFeed)
    */
   async fetchOrdersByAsset(asset: 'BTC' | 'ETH') {
+    const config = getCurrentConfig();
     const orders = await this.fetchPutSellOrders();
+    const targetFeed = asset === 'BTC' ? config.contracts.priceFeeds.btc : config.contracts.priceFeeds.eth;
+
     return orders.filter((o: any) =>
-      o.order.priceFeed.toLowerCase().includes(asset.toLowerCase())
+      o.order.priceFeed.toLowerCase() === targetFeed.toLowerCase()
     );
   }
 
@@ -64,7 +64,8 @@ export class ThetanutsService {
    */
   async getUserPositions(userAddress: string, referrer?: string) {
     try {
-      const response = await axios.get(`${this.indexerApiUrl}/user/${userAddress}/positions`);
+      const config = getCurrentConfig();
+      const response = await axios.get(`${config.indexerUrl}/user/${userAddress}/positions`);
       if (referrer) {
         return response.data.filter((p: any) => p.referrer?.toLowerCase() === referrer.toLowerCase());
       }
@@ -80,7 +81,8 @@ export class ThetanutsService {
    */
   async getUserHistory(userAddress: string) {
     try {
-      const response = await axios.get(`${this.indexerApiUrl}/user/${userAddress}/history`);
+      const config = getCurrentConfig();
+      const response = await axios.get(`${config.indexerUrl}/user/${userAddress}/history`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch user history", error);
@@ -94,7 +96,8 @@ export class ThetanutsService {
    */
   async triggerIndexerUpdate() {
     try {
-      await axios.get(`${this.indexerApiUrl}/update`);
+      const config = getCurrentConfig();
+      await axios.get(`${config.indexerUrl}/update`);
       return true;
     } catch (error) {
       console.error("Failed to trigger indexer update", error);
@@ -107,7 +110,8 @@ export class ThetanutsService {
    */
   async getStats() {
     try {
-      const response = await axios.get(`${this.indexerApiUrl}/stats`);
+      const config = getCurrentConfig();
+      const response = await axios.get(`${config.indexerUrl}/stats`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch stats", error);
@@ -119,8 +123,11 @@ export class ThetanutsService {
    * Format order for display (convert decimals)
    */
   formatOrderForDisplay(order: any) {
+    const config = getCurrentConfig();
+    const isBTC = order.order.priceFeed.toLowerCase() === config.contracts.priceFeeds.btc.toLowerCase();
+
     return {
-      asset: order.order.priceFeed.includes('BTC') ? 'BTC' : 'ETH',
+      asset: isBTC ? 'BTC' : 'ETH',
       strikes: order.order.strikes.map((s: string) => Number(s) / 1e8),
       pricePerContract: Number(order.order.price) / 1e8,  // 8 decimals
       maxCollateral: Number(order.order.maxCollateralUsable) / 1e6,  // 6 decimals (USDC)

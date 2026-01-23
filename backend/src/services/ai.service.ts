@@ -11,7 +11,6 @@ export class AIService {
     const { currentPrice, budget, risk } = params;
 
     // Default heuristic: suggest strike 5% below current price (safer entry)
-    // In the future, this can be adjusted based on the 'risk' parameter
     let strikePercentage = 0.95; 
 
     if (risk === 'high') {
@@ -23,25 +22,39 @@ export class AIService {
     const suggestedStrike = currentPrice * strikePercentage;
     
     // Mock premium calculation (approx 1.5% of budget for MVP)
-    const premium = budget * 0.015;
+    // In reality, this should come from Black-Scholes or Thetanuts API
+    const premium = budget * (risk === 'high' ? 0.025 : risk === 'low' ? 0.010 : 0.015);
+
+    let reasoning = "Mode Seimbang: Titik optimal antara cashback dan keamanan.";
+    if (risk === 'high') {
+        reasoning = "Mode Agresif: Strike dekat harga pasar. Cashback maksimal (Gede!), tapi siap-siap beli asetnya kalau harga turun dikit.";
+    } else if (risk === 'low') {
+        reasoning = "Mode Santai: Strike jauh di bawah harga sekarang. Kemungkinan kecil tereksekusi, cashback lebih kecil tapi aman buat yang cuma mau parkir dana.";
+    }
 
     return {
       suggested_strike: suggestedStrike,
       expected_premium: premium,
       risk_profile: risk || 'medium',
-      reasoning: `Strike ${(100 - (strikePercentage * 100)).toFixed(0)}% below current price offers optimal risk/reward ratio based on current volatility.`,
+      reasoning: reasoning,
       alternatives: [
         { 
             strike: currentPrice * 0.93, 
-            premium: budget * 0.012, 
+            premium: budget * 0.010, 
             risk: "low",
-            description: "Safer, lower premium"
+            description: "Mode Santai (Low Risk)"
+        },
+        { 
+            strike: currentPrice * 0.95, 
+            premium: budget * 0.015, 
+            risk: "medium",
+            description: "Mode Seimbang (Medium Risk)"
         },
         { 
             strike: currentPrice * 0.97, 
-            premium: budget * 0.020, 
+            premium: budget * 0.025, 
             risk: "high",
-            description: "Aggressive, higher potential return"
+            description: "Mode Agresif (High Risk)"
         }
       ]
     };
