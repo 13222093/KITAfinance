@@ -49,6 +49,16 @@ Resolved critical bugs where Mainnet addresses were hardcoded, causing failures 
 ### **CORS:**
 *   **`backend/src/index.ts`**: Verified and documented default CORS configuration (Allow All) suitable for the hackathon environment.
 
+### **Telegram Integration:**
+*   **`backend/src/services/telegram.service.ts`**: New service created to handle Telegram Bot interactions.
+    *   **Features**: `sendMessage` (with Markdown support) and `startPolling` (Long-polling for command handling).
+    *   **Commands**: Initial support for `/start` (returns chat ID) and `/ping`.
+*   **`backend/src/services/listener.ts`**: Integrated `telegramService` to push real-time notifications for:
+    *   New individual positions created (`KITAVault`).
+    *   New investment groups created (`GroupVault`).
+    *   New governance proposals/voting started (`GroupVault`).
+*   **`backend/.env`**: Added `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ADMIN_CHAT_ID` configuration keys.
+
 ## 4. Documentation Updates
 *   **`Gemini.md`**: Updated with current project status and checklist.
 *   **`.claude/BACKEND_GUIDE.md`**: Updated file tree to reflect actual filenames (`thetanuts.ts` -> `rfq.service.ts`, `orders.ts` -> `rfq.ts`).
