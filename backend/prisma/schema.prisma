@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  phoneNumber   String?        @unique @map("phone_number") @db.VarChar(20)
+  walletAddress String?        @unique @map("wallet_address") @db.VarChar(42)
+  name          String?        @db.VarChar(100)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  chatHistory   ChatHistory[]
+  groupsAdmin   Group[]        @relation("GroupAdmin")
+  groupMembers  GroupMember[]
+  positions     Position[]
+
+  @@map("users")
+}
+
+model ChatHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  role      String   @db.VarChar(10) // 'user' or 'assistant'
+  message   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("chat_history")
+}
+
+model Group {
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(100)
+  description     String?
+  adminId         Int?          @map("admin_id")
+  contractAddress String?       @map("contract_address") @db.VarChar(42)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  admin           User?         @relation("GroupAdmin", fields: [adminId], references: [id])
+  members         GroupMember[]
+  positions       Position[]
+
+  @@map("groups")
+}
+
+model GroupMember {
+  groupId  Int      @map("group_id")
+  userId   Int      @map("user_id")
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
+  @@map("group_members")
+}
+
+model Position {
+  id           Int      @id @default(autoincrement())
+  userId       Int?     @map("user_id")
+  groupId      Int?     @map("group_id")
+  vaultAddress String   @map("vault_address") @db.VarChar(42)
+  assetSymbol  String   @map("asset_symbol") @db.VarChar(10)
+  amount       Decimal  @db.Decimal(30, 0)
+  strikePrice  Decimal  @map("strike_price") @db.Decimal(30, 0)
+  expiry       DateTime @db.Timestamptz
+  isCall       Boolean  @default(false) @map("is_call")
+  status       String   @default("OPEN") @db.VarChar(20) // OPEN, FILLED, EXPIRED, CLOSED
+  txHash       String?  @map("tx_hash") @db.VarChar(66)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user         User?    @relation(fields: [userId], references: [id])
+  group        Group?   @relation(fields: [groupId], references: [id])
+
+  @@map("positions")
+}

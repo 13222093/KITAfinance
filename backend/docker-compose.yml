@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: nunggu-db
+    restart: always
+    environment:
+      POSTGRES_USER: nunggu_user
+      POSTGRES_PASSWORD: nunggu_password
+      POSTGRES_DB: nunggu_db
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
