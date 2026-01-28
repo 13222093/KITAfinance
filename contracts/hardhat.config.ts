@@ -32,8 +32,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      baseSepolia: process.env.BASESCAN_API_KEY || "",
-      base: process.env.BASESCAN_API_KEY || "",
+      baseSepolia: process.env.BASESCAN_API_KEY || "PLACEHOLDER_KEY",
+      base: process.env.BASESCAN_API_KEY || "PLACEHOLDER_KEY",
     },
     customChains: [
       {
@@ -44,22 +44,11 @@ const config: HardhatUserConfig = {
           browserURL: "https://sepolia.basescan.org",
         },
       },
-      {
-        network: "base",
-        chainId: 8453,
-        urls: {
-          apiURL: "https://api.basescan.org/api",
-          browserURL: "https://basescan.org",
-        },
-      },
     ],
   },
-  paths: {
-    sources: "./contracts",
-    tests: "./test",
-    cache: "./cache",
-    artifacts: "./artifacts",
-  },
+  sourcify: {
+    enabled: true
+  }
 };
 
 export default config;
