@@ -16,7 +16,8 @@
       "Bash(bun run:*)",
       "Bash(ping:*)",
       "Bash(curl:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(cd:*)"
     ]
   }
 }

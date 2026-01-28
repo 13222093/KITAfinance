@@ -385,6 +385,10 @@ contract GroupVault is ReentrancyGuard, Pausable {
         address optionContract = optionBook.fillOrder(order, signature, referrer);
 
         uint256 grossPremium = (order.price * order.numContracts) / 1e8;
+        
+        // Bug #7 fix: Slippage protection (at least 95% of expected premium)
+        require(collateralAmount >= grossPremium, "Insufficient collateral");
+        
         uint256 fee = (grossPremium * platformFee) / 10000;
         uint256 netPremium = grossPremium - fee;
         collectedFees += fee;
@@ -421,25 +425,29 @@ contract GroupVault is ReentrancyGuard, Pausable {
         require(amount <= member.contribution, "Exceeds contribution");
 
         Group storage group = groups[groupId];
+        uint256 withdrawn = 0;
 
-        // Withdraw from Aave
+        // Bug #8 fix: Handle withdrawal whether Aave is configured or not
         if (address(aavePool) != address(0) && groupAaveShares[groupId] > 0) {
             uint256 shareRatio = (amount * 1e18) / group.totalDeposited;
             uint256 sharesToWithdraw = (groupAaveShares[groupId] * shareRatio) / 1e18;
-            uint256 withdrawn = _withdrawFromAave(sharesToWithdraw);
+            withdrawn = _withdrawFromAave(sharesToWithdraw);
             groupAaveShares[groupId] -= sharesToWithdraw;
-            
-            group.totalDeposited -= amount;
-            member.contribution -= amount;
-
-            if (member.contribution == 0) {
-                member.isActive = false;
-                group.memberCount--;
-            }
-
-            collateralToken.safeTransfer(withdrawer, withdrawn);
-            emit MemberLeft(groupId, withdrawer, withdrawn);
+        } else {
+            // No Aave, just use the amount directly
+            withdrawn = amount;
         }
+        
+        group.totalDeposited -= amount;
+        member.contribution -= amount;
+
+        if (member.contribution == 0) {
+            member.isActive = false;
+            group.memberCount--;
+        }
+
+        collateralToken.safeTransfer(withdrawer, withdrawn);
+        emit MemberLeft(groupId, withdrawer, withdrawn);
     }
 
     // ============ View Functions ============

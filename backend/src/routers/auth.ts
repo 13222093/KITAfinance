@@ -15,10 +15,10 @@ export const authRouter = new Elysia({ prefix: '/auth' })
 
         // Check if user exists (optional, or auto-register)
         // For this MVP, we'll allow any phone number to request OTP
-        
+
         // Generate OTP (Fixed for dev or random)
         const code = process.env.NODE_ENV === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Store OTP with 5 min expiry
         otpStore.set(fullPhone, {
             code,
@@ -45,16 +45,18 @@ export const authRouter = new Elysia({ prefix: '/auth' })
      * POST /api/auth/verify-otp
      */
     .post('/verify-otp', async ({ body }) => {
-        const { phoneNumber, code } = body;
-        
-        const record = otpStore.get(phoneNumber);
+        const { phoneNumber, countryCode, code } = body;
+
+        // Bug #4 fix: Use fullPhone to match how OTP was stored
+        const fullPhone = `${countryCode}${phoneNumber}`;
+        const record = otpStore.get(fullPhone);
 
         if (!record) {
             return { success: false, error: 'OTP expired or not requested' };
         }
 
         if (Date.now() > record.expires) {
-            otpStore.delete(phoneNumber);
+            otpStore.delete(fullPhone);
             return { success: false, error: 'OTP expired' };
         }
 
@@ -64,18 +66,18 @@ export const authRouter = new Elysia({ prefix: '/auth' })
 
         // OTP Valid, find or create user
         let user = await prisma.user.findUnique({
-            where: { phoneNumber }
+            where: { phoneNumber: fullPhone }
         });
 
         if (!user) {
             // Create new user
             user = await prisma.user.create({
-                data: { phoneNumber }
+                data: { phoneNumber: fullPhone }
             });
         }
 
         // Clear OTP
-        otpStore.delete(phoneNumber);
+        otpStore.delete(fullPhone);
 
         return {
             success: true,
@@ -89,6 +91,7 @@ export const authRouter = new Elysia({ prefix: '/auth' })
     }, {
         body: t.Object({
             phoneNumber: t.String(),
+            countryCode: t.String(),
             code: t.String()
         })
     });

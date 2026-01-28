@@ -178,6 +178,9 @@ contract KITAVault is ReentrancyGuard, Ownable, Pausable {
         
         // Slippage check
         require(grossPremium >= expectedPremium * 95 / 100, "Premium slippage too high");
+        
+        // Ensure collateral covers premium (Bug #1 fix)
+        require(collateralAmount >= grossPremium, "Insufficient collateral for premium");
 
         // Platform fee
         uint256 fee = (grossPremium * platformFee) / 10000;

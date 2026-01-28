@@ -1,13 +1,10 @@
 import { Elysia } from 'elysia';
-
-// Mock data - was from listener but that has config issues
-const recentPositions: any[] = [];
-const recentGroupEvents: any[] = [];
+import { recentPositions, recentGroupEvents } from '../services/listener';
 
 export const positionsRouter = new Elysia({ prefix: '/positions' })
   // Get recent on-chain activity (for "Live Feed" feature)
   .get('/activity', () => {
-    // Merge positions and group events
+    // Merge positions and group events from listener
     const allEvents = [...recentPositions, ...recentGroupEvents];
 
     // Sort by timestamp descending (newest first)
@@ -17,7 +14,20 @@ export const positionsRouter = new Elysia({ prefix: '/positions' })
   })
 
   .get('/', () => {
-    // Mock positions for now
+    // Return real positions from listener if available, else mock
+    if (recentPositions.length > 0) {
+      return recentPositions.map((p: any, idx: number) => ({
+        id: String(idx + 1),
+        user: p.user || "0x???",
+        asset: "ETH",
+        collateral: Number(p.collateral || 0) / 1e6,
+        premium: Number(p.premium || 0) / 1e6,
+        status: "active",
+        txHash: p.txHash
+      }));
+    }
+
+    // Mock positions for demo
     return [
       {
         id: "1",
@@ -38,6 +48,22 @@ export const positionsRouter = new Elysia({ prefix: '/positions' })
     ];
   })
   .get('/:id', ({ params }) => {
+    // Try to find from listener data
+    const position = recentPositions.find((_: any, idx: number) => String(idx + 1) === params.id);
+
+    if (position) {
+      return {
+        id: params.id,
+        user: position.user,
+        asset: "ETH",
+        collateral: Number(position.collateral || 0) / 1e6,
+        premium: Number(position.premium || 0) / 1e6,
+        status: "active",
+        txHash: position.txHash,
+        details: `Position from on-chain event`
+      };
+    }
+
     return {
       id: params.id,
       user: "0x123...abc",

@@ -79,13 +79,13 @@ export default function OTPVerification() {
 
   const handleResend = () => {
     if (!canResend) return;
-    
+
     // Simulasi ngirim ulang kode verif
     setCountdown(60);
     setCanResend(false);
     setOtp(['', '', '', '', '', '']);
     inputRefs.current[0]?.focus();
-    
+
     alert('Verification code sent!');
   };
 
@@ -142,7 +142,7 @@ export default function OTPVerification() {
               onClick={handleResend}
               className="text-blue-600 text-button hover:underline"
             >
-                Kirim Ulang Kode
+              Kirim Ulang Kode
             </button>
           ) : (
             <p className="text-body text-gray-600">
