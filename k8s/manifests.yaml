@@ -23,7 +23,7 @@ metadata:
   namespace: nunggu
 data:
   NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "https://api.nunggu.naufarrel.tech"
+  NEXT_PUBLIC_API_URL: "https://api-nunggu.naufarrel.tech"
   # Backend Config
   PORT: "8000"
   NETWORK: "sepolia"
@@ -138,7 +138,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`api.nunggu.k8s.local`) || Host(`api.nunggu.naufarrel.tech`)
+    - match: Host(`api-nunggu.k8s.local`) || Host(`api-nunggu.naufarrel.tech`)
       kind: Rule
       services:
         - name: nunggu-backend
@@ -174,7 +174,7 @@ spec:
             - name: NODE_ENV
               value: "production"
             - name: NEXT_PUBLIC_API_URL
-              value: "https://api.nunggu.naufarrel.tech"
+              value: "https://api-nunggu.naufarrel.tech"
           resources:
             limits:
               memory: "256Mi"
