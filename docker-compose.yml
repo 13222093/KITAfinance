@@ -1,0 +1,117 @@
+# ============================================
+# DOCKER COMPOSE - NUNGGU/KITA
+# Production-grade multi-service setup
+# ============================================
+version: '3.8'
+
+services:
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  db:
+    image: postgres:15-alpine
+    container_name: nunggu-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nunggu_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nunggu_password}
+      POSTGRES_DB: ${POSTGRES_DB:-nunggu_db}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nunggu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nunggu_user} -d ${POSTGRES_DB:-nunggu_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ==========================================
+  # Backend API (Elysia.js + Prisma)
+  # ==========================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    container_name: nunggu-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-3001}:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nunggu_user}:${POSTGRES_PASSWORD:-nunggu_password}@db:5432/${POSTGRES_DB:-nunggu_db}?schema=public
+      # Add other env vars as needed
+      # GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY}
+      # TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - nunggu-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ==========================================
+  # Frontend (Next.js)
+  # ==========================================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    container_name: nunggu-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      # Add other env vars as needed
+    depends_on:
+      - backend
+    networks:
+      - nunggu-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ==========================================
+  # Nginx Reverse Proxy (Optional)
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: nunggu-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - nunggu-network
+    profiles:
+      - with-nginx
+
+networks:
+  nunggu-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -38,10 +38,10 @@ export default function GroupDetail({ params }: { params: { id: string } }) {
   ];
 
   const activities = [
-    { id: 1, type: 'join', member: 'Eka Putri', date: '1 jam lalu' },
-    { id: 2, type: 'join', member: 'Dedi Kurniawan', date: '2 jam lalu' },
-    { id: 3, type: 'join', member: 'Citra Dewi', date: '3 jam lalu' },
-    { id: 4, type: 'join', member: 'Budi Santoso', date: '5 jam lalu' },
+    { id: 1, type: 'join', member: 'Eka Putri', date: '1 jam lalu' , amount: 0},
+    { id: 2, type: 'join', member: 'Dedi Kurniawan', date: '2 jam lalu', amount: 0},
+    { id: 3, type: 'join', member: 'Citra Dewi', date: '3 jam lalu', amount: 0},
+    { id: 4, type: 'join', member: 'Budi Santoso', date: '5 jam lalu', amount: 0},
   ];
 
   // Strategi yang tersedia untuk voting

@@ -7,6 +7,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+interface Position {
+  id: number;
+  name: string;
+  apy: number;
+  balance: number;
+  status: string;
+};
+
 export default function Dashboard() {
   const router = useRouter();
   const [showSoloModal, setShowSoloModal] = useState(false);
@@ -218,7 +226,7 @@ export default function Dashboard() {
             <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6">
               <h2 className="text-subheading text-white mb-6">Active Positions</h2>
               <div className="space-y-4">
-                {positions.map((position) => (
+                {positions.map((position: Position) => (
                   <div
                     key={position.id}
                     className="flex items-center justify-between p-4 bg-slate-700/30 rounded-xl hover:bg-slate-700/50 transition-colors border border-slate-600/30"
