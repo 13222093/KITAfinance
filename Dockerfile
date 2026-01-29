@@ -43,8 +43,8 @@ COPY --from=backend-deps /app/backend/node_modules ./node_modules
 # Copy backend source code
 COPY backend/ .
 
-# Generate Prisma client
-RUN npx prisma generate
+# Generate Prisma client (dummy URL for build time only)
+RUN DATABASE_URL="postgresql://user:pass@localhost:5432/db" npx prisma generate
 
 # ============================================
 # Stage 4: Backend Production
@@ -65,25 +65,17 @@ ENV GROUP_VAULT_ADDRESS_SEPOLIA=0x9B2b628b1bad3C9983A2E6C0170185d289489c6e
 ENV BASE_MAINNET_RPC=https://mainnet.base.org
 ENV KITA_VAULT_ADDRESS_MAINNET=0x0000000000000000000000000000000000000000
 ENV GROUP_VAULT_ADDRESS_MAINNET=0x0000000000000000000000000000000000000000
-# Secrets (override at runtime)
-ENV DATABASE_URL=""
-ENV TELEGRAM_BOT_TOKEN=""
-ENV TELEGRAM_ADMIN_CHAT_ID=""
-ENV GEMINI_API_KEY=""
 
 WORKDIR /app
+
+COPY --from=backend-builder --chown=appuser:nodejs /app/backend ./
+
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 appuser
 
-# Copy built backend
-COPY --from=backend-builder --chown=appuser:nodejs /app/backend ./
-
-# Install only production dependencies
-RUN npm ci --omit=dev && \
-    npx prisma generate && \
-    npm cache clean --force
+RUN chown -R appuser:nodejs /app
 
 # Switch to non-root user
 USER appuser

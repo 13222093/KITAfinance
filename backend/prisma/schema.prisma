@@ -7,14 +7,14 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  phoneNumber   String?        @unique @map("phone_number") @db.VarChar(20)
-  walletAddress String?        @unique @map("wallet_address") @db.VarChar(42)
-  name          String?        @db.VarChar(100)
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id            Int           @id @default(autoincrement())
+  phoneNumber   String?       @unique @map("phone_number") @db.VarChar(20)
+  walletAddress String?       @unique @map("wallet_address") @db.VarChar(42)
+  name          String?       @db.VarChar(100)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   chatHistory   ChatHistory[]
-  groupsAdmin   Group[]        @relation("GroupAdmin")
+  groupsAdmin   Group[]       @relation("GroupAdmin")
   groupMembers  GroupMember[]
   positions     Position[]
   proposals     Proposal[]
@@ -26,8 +26,8 @@ model ChatHistory {
   id        Int      @id @default(autoincrement())
   userId    Int?     @map("user_id")
   role      String   @db.VarChar(10) // 'user' or 'assistant'
-  message   String
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  message   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("chat_history")
@@ -37,10 +37,10 @@ model Group {
   id              Int           @id @default(autoincrement())
   onchainId       Int?          @unique @map("onchain_id")
   name            String        @db.VarChar(100)
-  description     String?
+  description     String?       @db.Text
   adminId         Int?          @map("admin_id")
   contractAddress String?       @map("contract_address") @db.VarChar(42)
-  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   admin           User?         @relation("GroupAdmin", fields: [adminId], references: [id])
   members         GroupMember[]
   positions       Position[]
@@ -52,7 +52,7 @@ model Group {
 model GroupMember {
   groupId  Int      @map("group_id")
   userId   Int      @map("user_id")
-  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz(6)
   amount   Decimal? @db.Decimal(30, 0)
   group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -70,12 +70,12 @@ model Position {
   assetSymbol  String   @map("asset_symbol") @db.VarChar(10)
   amount       Decimal  @db.Decimal(30, 0)
   strikePrice  Decimal  @map("strike_price") @db.Decimal(30, 0)
-  expiry       DateTime @db.Timestamptz
+  expiry       DateTime @db.Timestamptz(6)
   isCall       Boolean  @default(false) @map("is_call")
   isLong       Boolean  @default(false) @map("is_long")
   status       String   @default("OPEN") @db.VarChar(20) // OPEN, FILLED, EXPIRED, CLOSED
   txHash       String?  @map("tx_hash") @db.VarChar(66)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   user         User?    @relation(fields: [userId], references: [id])
   group        Group?   @relation(fields: [groupId], references: [id])
 
@@ -88,12 +88,12 @@ model Proposal {
   groupId      Int      @map("group_id")
   proposerId   Int      @map("proposer_id")
   proposalType Int      @map("proposal_type")
-  description  String?
+  description  String?  @db.Text
   votesFor     Int      @default(0) @map("votes_for")
   votesAgainst Int      @default(0) @map("votes_against")
-  deadline     DateTime @db.Timestamptz
+  deadline     DateTime @db.Timestamptz(6)
   status       String   @default("PENDING") @db.VarChar(20) // PENDING, EXECUTED, CANCELLED
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   group        Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   proposer     User     @relation(fields: [proposerId], references: [id])
 

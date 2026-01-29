@@ -90,7 +90,7 @@ export class TelegramService {
       this.sendMessage(chatId, `👋 Halo *${user}*!
 
 Selamat datang di *NUNGGU Bot*.
-ID Chat kamu adalah: `${chatId}`
+ID Chat kamu adalah: ${chatId}
 
 Gunakan ID ini untuk notifikasi Nabung Bareng.`);
     } else if (text === '/ping') {
