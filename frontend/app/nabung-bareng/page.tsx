@@ -152,90 +152,6 @@ export default function NabungBareng() {
         </div>
       </section>
 
-      {/* BENEFITS SECTION - Cyan/Teal Gradient */}
-      <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-[#00FFF0] via-[#0A98FF] to-[#04877f]">
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(0,255,240,0.3),transparent_50%)] animate-pulse" />
-
-        {/* Floating orbs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 right-20 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20 animate-float" />
-          <div className="absolute bottom-10 left-20 w-80 h-80 bg-[#FBFF2B] rounded-full blur-3xl opacity-15 animate-float-delayed" />
-        </div>
-
-        {/* Floating Icons - Benefits Theme */}
-        {/* Award Badge - Top Left */}
-        <div className="absolute top-16 left-8 md:left-16 animate-bounce" style={{ animationDelay: '0.2s' }}>
-          <div className="w-12 h-12 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-xl flex items-center justify-center shadow-xl rotate-12 backdrop-blur-sm border-2 border-white/30">
-            <Award className="w-6 h-6 text-white drop-shadow-lg" />
-          </div>
-        </div>
-
-        {/* Trending Up - Bottom Right */}
-        <div className="absolute bottom-16 right-8 md:right-16 animate-pulse" style={{ animationDelay: '0.8s' }}>
-          <div className="w-14 h-14 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-2xl flex items-center justify-center shadow-2xl -rotate-12 backdrop-blur-sm border-2 border-white/30">
-            <TrendingUp className="w-7 h-7 text-white drop-shadow-lg" />
-          </div>
-        </div>
-
-        {/* Percentage Badge - Middle Left */}
-        <div className="hidden md:block absolute top-1/2 left-12 -translate-y-1/2 animate-bounce" style={{ animationDelay: '0.5s' }}>
-          <div className="px-3 py-2 bg-gradient-to-r from-[#C15BFF] to-[#A855F7] rounded-full shadow-2xl backdrop-blur-sm border-2 border-white/40 -rotate-12">
-            <span className="text-white font-black text-base drop-shadow-lg">+20%</span>
-          </div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="inline-block bg-gradient-to-r from-[#C15BFF] to-[#FBFF2B] text-white px-6 py-2 rounded-full text-sm font-bold mb-4 shadow-lg">
-              ✨ KEUNTUNGAN
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 drop-shadow-lg">
-              Kenapa Harus Nabung Bareng?
-            </h2>
-            <p className="text-lg text-white/90 max-w-2xl mx-auto">
-              Lebih dari sekedar investasi - ini adalah <span className="font-bold text-[#FFBC57]">social DeFi experience!</span>
-            </p>
-          </div>
-
-          <div className="overflow-hidden -mx-4 md:mx-0">
-            <div className="flex gap-4 px-4 md:px-0 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible">
-              {benefits.map((benefit, index) => {
-                const Icon = benefit.icon;
-                const gradients = [
-                  { from: '#C15BFF', to: '#0A98FF', shadow: 'rgba(193,91,255,0.4)' },
-                  { from: '#00FFF0', to: '#0A98FF', shadow: 'rgba(0,255,240,0.4)' },
-                  { from: '#FFBC57', to: '#FF9500', shadow: 'rgba(255,188,87,0.4)' },
-                  { from: '#FBFF2B', to: '#C15BFF', shadow: 'rgba(251,255,43,0.4)' },
-                ];
-                const gradient = gradients[index % gradients.length];
-
-                return (
-                  <div
-                    key={index}
-                    className="group w-[240px] min-w-[240px] md:w-auto md:min-w-0 flex-shrink-0 snap-start bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-xl md:shadow-2xl border-2 md:border-4 border-white/50 hover:scale-105 hover:-translate-y-2 transition-all duration-300"
-                    style={{
-                      boxShadow: `0 20px 60px ${gradient.shadow}`
-                    }}
-                  >
-                    <div
-                      className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform"
-                      style={{
-                        background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`
-                      }}
-                    >
-                      <Icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg md:text-xl font-black text-[#0A4A7C] mb-1 md:mb-2 text-center">{benefit.title}</h3>
-                    <p className="text-sm md:text-base text-gray-700 text-center leading-relaxed">{benefit.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* MY GROUPS SECTION - Orange/Yellow Gradient */}
       <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-[#FFBC57] via-[#FF9500] to-[#F97316]">
         {/* Animated gradient overlay */}
@@ -287,7 +203,7 @@ export default function NabungBareng() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8 pt-2 -mx-4 px-4 md:mx-0 md:px-0">
             {myGroups.map((group, index) => {
               const progress = (group.currentAmount / group.targetAmount) * 100;
               const cardGradients = [
@@ -301,7 +217,7 @@ export default function NabungBareng() {
                 <Link
                   key={group.id}
                   href={`/nabung-bareng/${group.id}`}
-                  className="group block bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border-4 border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                  className="group block w-[85vw] md:w-[500px] flex-shrink-0 snap-center bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border-4 border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                   style={{
                     boxShadow: `0 20px 60px ${cardStyle.shadow}`
                   }}
@@ -396,6 +312,90 @@ export default function NabungBareng() {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* BENEFITS SECTION - Cyan/Teal Gradient */}
+      <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-[#00FFF0] via-[#0A98FF] to-[#04877f]">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(0,255,240,0.3),transparent_50%)] animate-pulse" />
+
+        {/* Floating orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 right-20 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20 animate-float" />
+          <div className="absolute bottom-10 left-20 w-80 h-80 bg-[#FBFF2B] rounded-full blur-3xl opacity-15 animate-float-delayed" />
+        </div>
+
+        {/* Floating Icons - Benefits Theme */}
+        {/* Award Badge - Top Left */}
+        <div className="absolute top-16 left-8 md:left-16 animate-bounce" style={{ animationDelay: '0.2s' }}>
+          <div className="w-12 h-12 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-xl flex items-center justify-center shadow-xl rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <Award className="w-6 h-6 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Trending Up - Bottom Right */}
+        <div className="absolute bottom-16 right-8 md:right-16 animate-pulse" style={{ animationDelay: '0.8s' }}>
+          <div className="w-14 h-14 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-2xl flex items-center justify-center shadow-2xl -rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <TrendingUp className="w-7 h-7 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Percentage Badge - Middle Left */}
+        <div className="hidden md:block absolute top-1/2 left-12 -translate-y-1/2 animate-bounce" style={{ animationDelay: '0.5s' }}>
+          <div className="px-3 py-2 bg-gradient-to-r from-[#C15BFF] to-[#A855F7] rounded-full shadow-2xl backdrop-blur-sm border-2 border-white/40 -rotate-12">
+            <span className="text-white font-black text-base drop-shadow-lg">+20%</span>
+          </div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="inline-block bg-gradient-to-r from-[#C15BFF] to-[#FBFF2B] text-white px-6 py-2 rounded-full text-sm font-bold mb-4 shadow-lg">
+              ✨ KEUNTUNGAN
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 drop-shadow-lg">
+              Kenapa Harus Nabung Bareng?
+            </h2>
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
+              Lebih dari sekedar investasi - ini adalah <span className="font-bold text-[#FFBC57]">social DeFi experience!</span>
+            </p>
+          </div>
+
+          <div className="overflow-hidden -mx-4 md:mx-0">
+            <div className="flex gap-4 px-4 md:px-0 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible">
+              {benefits.map((benefit, index) => {
+                const Icon = benefit.icon;
+                const gradients = [
+                  { from: '#C15BFF', to: '#0A98FF', shadow: 'rgba(193,91,255,0.4)' },
+                  { from: '#00FFF0', to: '#0A98FF', shadow: 'rgba(0,255,240,0.4)' },
+                  { from: '#FFBC57', to: '#FF9500', shadow: 'rgba(255,188,87,0.4)' },
+                  { from: '#FBFF2B', to: '#C15BFF', shadow: 'rgba(251,255,43,0.4)' },
+                ];
+                const gradient = gradients[index % gradients.length];
+
+                return (
+                  <div
+                    key={index}
+                    className="group w-[240px] min-w-[240px] md:w-auto md:min-w-0 flex-shrink-0 snap-start bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-xl md:shadow-2xl border-2 md:border-4 border-white/50 hover:scale-105 hover:-translate-y-2 transition-all duration-300"
+                    style={{
+                      boxShadow: `0 20px 60px ${gradient.shadow}`
+                    }}
+                  >
+                    <div
+                      className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform"
+                      style={{
+                        background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`
+                      }}
+                    >
+                      <Icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-black text-[#0A4A7C] mb-1 md:mb-2 text-center">{benefit.title}</h3>
+                    <p className="text-sm md:text-base text-gray-700 text-center leading-relaxed">{benefit.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
