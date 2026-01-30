@@ -159,63 +159,70 @@ export default function GroupDetail({ params }: { params: { id: string } }) {
             )}
           </div>
 
-          {/* Main Stats Card */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-4 border-white/50">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-              <div>
-                <p className="text-sm font-bold text-gray-500 mb-1">Total Terkumpul</p>
-                <p className="text-3xl font-black text-[#0A4A7C]">Rp {(group.currentAmount / 1000000).toFixed(1)}jt</p>
+          {/* Main Stats Card - Enhanced */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/50">
+            {/* Primary Stats - Large Display */}
+            <div className="mb-6">
+              <div className="flex items-end justify-between mb-2">
+                <div>
+                  <p className="text-sm font-bold text-gray-500 mb-1">Total Terkumpul</p>
+                  <p className="text-4xl md:text-5xl font-black text-[#0A4A7C]">Rp {(group.currentAmount / 1000000).toFixed(1)}jt</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-gray-500 mb-1">Target</p>
+                  <p className="text-2xl md:text-3xl font-black text-gray-400">Rp {(group.targetAmount / 1000000).toFixed(1)}jt</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold text-gray-500 mb-1">Target Dana</p>
-                <p className="text-3xl font-black text-gray-800">Rp {(group.targetAmount / 1000000).toFixed(1)}jt</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-gray-500 mb-1">Progress</p>
-                <p className="text-3xl font-black text-[#C15BFF]">{Math.round(progress)}%</p>
+
+              {/* Progress Bar - Enhanced with Glow */}
+              <div className="relative mt-4">
+                <div className="w-full bg-gray-100 rounded-full h-8 overflow-hidden shadow-inner">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#C15BFF] via-[#0A98FF] to-[#00FFF0] rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                    style={{ width: `${progress}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+                  </div>
+                </div>
+                <div className="absolute -top-1 left-0 right-0 flex items-center justify-center">
+                  <span className="text-xs font-black text-white drop-shadow-lg px-3 py-1 bg-gradient-to-r from-[#C15BFF] to-[#0A98FF] rounded-full">
+                    {Math.round(progress)}% Complete
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="mb-8 relative">
-              <div className="w-full bg-gray-100 rounded-full h-6 overflow-hidden shadow-inner">
-                <div
-                  className="h-full bg-gradient-to-r from-[#C15BFF] via-[#0A98FF] to-[#00FFF0] round-full transition-all duration-1000 ease-out shadow-lg relative"
-                  style={{ width: `${progress}%` }}
-                >
-                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+            {/* Quick Stats Grid - Enhanced */}
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-4 border-2 border-purple-200 hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-purple-500 rounded-xl shadow-lg">
+                    <Users className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                  </div>
                 </div>
+                <p className="text-xs font-bold text-purple-600 mb-1">Members</p>
+                <p className="text-xl md:text-2xl font-black text-purple-900">{group.members}/{group.maxMembers}</p>
               </div>
-            </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 border-2 border-gray-100 transition-transform hover:scale-105">
-                <div className="p-2 bg-purple-100 rounded-xl">
-                  <Users className="w-6 h-6 text-[#A855F7]" />
+              <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-2xl p-4 border-2 border-cyan-200 hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-cyan-500 rounded-xl shadow-lg">
+                    <Clock className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-gray-500">Members</p>
-                  <p className="text-[#0A4A7C] font-black text-lg">{group.members}/{group.maxMembers}</p>
-                </div>
+                <p className="text-xs font-bold text-cyan-600 mb-1">Phase</p>
+                <p className="text-sm md:text-base font-black text-cyan-900 capitalize">{group.phase.replace('_', ' ')}</p>
               </div>
-              <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 border-2 border-gray-100 transition-transform hover:scale-105">
-                <div className="p-2 bg-cyan-100 rounded-xl">
-                  <Clock className="w-6 h-6 text-[#06B6D4]" />
+
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 border-2 border-amber-200 hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-amber-500 rounded-xl shadow-lg">
+                    <Calendar className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-gray-500">Phase</p>
-                  <p className="text-[#0A4A7C] font-black text-lg capitalize">{group.phase.replace('_', ' ')}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 border-2 border-gray-100 transition-transform hover:scale-105">
-                <div className="p-2 bg-amber-100 rounded-xl">
-                  <Calendar className="w-6 h-6 text-[#FFBC57]" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-gray-500">Created</p>
-                  <p className="text-[#0A4A7C] font-black text-lg">{group.createdDate}</p>
-                </div>
+                <p className="text-xs font-bold text-amber-600 mb-1">Created</p>
+                <p className="text-sm md:text-base font-black text-amber-900">{group.createdDate}</p>
               </div>
             </div>
           </div>
@@ -370,65 +377,96 @@ export default function GroupDetail({ params }: { params: { id: string } }) {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Members List */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-4 border-white/50">
-              <div className="flex items-center justify-between mb-8">
+            {/* Members List - Enhanced Grid */}
+            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/50">
+              <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-[#0A4A7C]">Anggota Grup</h2>
-                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full">
+                <span className="px-3 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 text-xs font-black rounded-full border-2 border-purple-300">
                   {group.members}/{group.maxMembers} members
                 </span>
               </div>
-              <div className="space-y-4">
-                {members.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#0A98FF] to-[#04877f] rounded-xl flex items-center justify-center text-white font-black shadow-md">
-                      {member.avatar}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-[#0A4A7C] font-bold">{member.name}</p>
-                        {member.role === 'Creator' && (
-                          <span className="px-2 py-0.5 bg-[#C15BFF]/10 text-[#C15BFF] text-xs font-bold rounded shadow-sm border border-[#C15BFF]/20">
-                            Creator
-                          </span>
-                        )}
+
+              {/* Members Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                {members.map((member) => {
+                  const memberProgress = member.contribution > 0 ? (member.contribution / contributionPerMember) * 100 : 0;
+
+                  return (
+                    <div
+                      key={member.id}
+                      className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all group"
+                    >
+                      {/* Member Header */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-[#C15BFF] to-[#0A98FF] rounded-xl flex items-center justify-center text-white font-black shadow-lg group-hover:scale-110 transition-transform">
+                          {member.avatar}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-[#0A4A7C] font-bold truncate">{member.name}</p>
+                            {member.role === 'Creator' && (
+                              <span className="px-2 py-0.5 bg-gradient-to-r from-[#C15BFF] to-[#0A98FF] text-white text-xs font-bold rounded-full shadow-sm flex-shrink-0">
+                                👑
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Rp {(member.contribution / 1000000).toFixed(1)}jt
+                          </p>
+                        </div>
+                        {/* Status Icon */}
+                        <div>
+                          {group.phase === 'formation' && (
+                            member.hasJoined ? (
+                              <div className="bg-green-100 p-1.5 rounded-full">
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                              </div>
+                            ) : (
+                              <div className="bg-yellow-100 p-1.5 rounded-full">
+                                <Clock className="w-4 h-4 text-yellow-600" />
+                              </div>
+                            )
+                          )}
+                          {(group.phase === 'contributing' || group.phase === 'invested' || group.phase === 'completed_voting') && (
+                            member.hasContributed ? (
+                              <div className="bg-green-100 p-1.5 rounded-full">
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                              </div>
+                            ) : (
+                              <div className="bg-yellow-100 p-1.5 rounded-full">
+                                <Clock className="w-4 h-4 text-yellow-600" />
+                              </div>
+                            )
+                          )}
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-500 font-medium">
-                        Kontribusi: <span className="text-[#0A4A7C] font-bold">Rp {(member.contribution / 1000000).toFixed(1)}jt</span>
-                        <span className="text-xs ml-2 text-gray-400">
-                          ({((member.contribution / group.targetAmount) * 100).toFixed(0)}%)
-                        </span>
-                      </p>
-                    </div>
-                    <div>
-                      {group.phase === 'formation' && (
-                        member.hasJoined ? (
-                          <div className="bg-green-100 p-1 rounded-full"><CheckCircle className="w-5 h-5 text-green-500" /></div>
-                        ) : (
-                          <div className="bg-yellow-100 p-1 rounded-full"><Clock className="w-5 h-5 text-yellow-500" /></div>
-                        )
-                      )}
-                      {(group.phase === 'contributing' || group.phase === 'invested' || group.phase === 'completed_voting') && (
-                        member.hasContributed ? (
-                          <div className="bg-green-100 p-1 rounded-full"><CheckCircle className="w-5 h-5 text-green-500" /></div>
-                        ) : (
-                          <div className="bg-yellow-100 p-1 rounded-full"><Clock className="w-5 h-5 text-yellow-500" /></div>
-                        )
+
+                      {/* Contribution Progress Bar */}
+                      {contributionPerMember > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-bold text-gray-500">Kontribusi</span>
+                            <span className="text-xs font-black text-purple-600">{Math.round(memberProgress)}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-[#C15BFF] to-[#0A98FF] rounded-full transition-all duration-500"
+                              style={{ width: `${memberProgress}%` }}
+                            ></div>
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Info pembagian sama rata */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl">
-                <p className="text-sm text-blue-800 font-medium">
-                  💡 Kontribusi per orang: <span className="font-bold">Rp {(contributionPerMember / 1000000).toFixed(1)}jt</span>
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl">
+                <p className="text-sm text-blue-800 font-bold">
+                  💡 Kontribusi per orang: <span className="text-blue-900">Rp {(contributionPerMember / 1000000).toFixed(1)}jt</span>
                 </p>
-                <p className="text-xs text-blue-500 mt-1 font-semibold">
+                <p className="text-xs text-blue-600 mt-1 font-semibold">
                   Pembagian sama rata untuk {group.members} anggota
                 </p>
               </div>

@@ -2,13 +2,15 @@
 
 import { Navbar } from '@/components/Navbar';
 import { ChatBot } from '@/components/ChatBot';
+import { PriceChart } from '@/components/PriceChart';
 import { ArrowLeft, DollarSign, TrendingUp, AlertCircle, CheckCircle, Calendar, Target, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function CashSecuredPut() {
   const [amount, setAmount] = useState('');
-  const [selectedAsset, setSelectedAsset] = useState('USDC');
+  const [selectedAsset, setSelectedAsset] = useState('ETH');
+  const [targetPrice, setTargetPrice] = useState(''); // NEW: Harga target beli
 
   const strategyInfo = {
     name: 'Cash-Secured Put',
@@ -20,28 +22,30 @@ export default function CashSecuredPut() {
   };
 
   const assets = [
-    { symbol: 'USDC', name: 'USD Coin', currentAPY: 8.5, available: true },
-    { symbol: 'USDT', name: 'Tether', currentAPY: 8.2, available: true },
-    { symbol: 'DAI', name: 'Dai Stablecoin', currentAPY: 9.1, available: true },
+    { symbol: 'ETH', name: 'Ethereum', currentPrice: 42000000, available: true },
+    { symbol: 'BTC', name: 'Bitcoin', currentPrice: 850000000, available: true },
+    { symbol: 'SOL', name: 'Solana', currentPrice: 1500000, available: true },
   ];
 
   const benefits = [
-    { icon: DollarSign, title: 'Premium Income', description: 'Dapatkan premium langsung saat menjual opsi put' },
-    { icon: Target, title: 'Beli Lebih Murah', description: 'Kesempatan membeli aset di harga strike yang lebih rendah' },
-    { icon: Shield, title: 'Risiko Terukur', description: 'Maksimal loss sudah diketahui sejak awal (strike price)' },
-    { icon: TrendingUp, title: 'APY Stabil', description: 'Yield konsisten dari premium yang diterima' },
+    { icon: DollarSign, title: 'Cashback Instant', description: 'Dapat cashback langsung saat pasang antrian beli' },
+    { icon: Target, title: 'Beli Lebih Murah', description: 'Kesempatan beli crypto di harga target yang lebih rendah' },
+    { icon: Shield, title: 'Risiko Jelas', description: 'Tau dari awal berapa maksimal yang bisa dibeli' },
+    { icon: TrendingUp, title: 'Win-Win', description: 'Harga turun = beli murah, harga naik = cashback jadi profit' },
   ];
 
   const howItWorks = [
-    { step: 1, title: 'Pilih Aset & Jumlah', description: 'Tentukan aset yang ingin kamu beli dan jumlah investasi' },
-    { step: 2, title: 'Jual Opsi Put', description: 'Sistem menjual opsi put dengan strike price di bawah harga pasar' },
-    { step: 3, title: 'Terima Premium', description: 'Langsung dapat premium sebagai income pasif' },
-    { step: 4, title: 'Exercise atau Expire', description: 'Jika harga turun di bawah strike, kamu beli aset lebih murah. Jika tidak, premium jadi profit' },
+    { step: 1, title: 'Pilih Aset Target', description: 'Pilih crypto yang mau kamu beli (ETH, BTC, atau SOL)' },
+    { step: 2, title: 'Tentukan Harga Beli', description: 'Set harga target kamu. Misal: "Gue mau beli ETH di 38 juta"' },
+    { step: 3, title: 'Dapat Cashback Instant', description: 'Langsung terima cashback/premium saat order aktif' },
+    { step: 4, title: 'Tunggu Hasil', description: 'Kalau harga turun, kamu beli murah. Kalau nggak turun, cashback jadi profit!' },
   ];
 
-  const estimatedReturns = amount ? {
-    monthly: parseFloat(amount) * 0.008,
-    yearly: parseFloat(amount) * 0.096,
+  // Calculate premium/cashback (simplified - real calculation from Thetanuts RFQ)
+  const selectedAssetData = assets.find(a => a.symbol === selectedAsset);
+  const estimatedPremium = amount && targetPrice && selectedAssetData ? {
+    cashback: parseFloat(amount) * 0.015, // ~1.5% premium estimate
+    percentBelow: ((selectedAssetData.currentPrice - parseFloat(targetPrice)) / selectedAssetData.currentPrice * 100).toFixed(1),
   } : null;
 
   return (
@@ -100,6 +104,16 @@ export default function CashSecuredPut() {
                 </div>
               </div>
 
+              {/* Price Chart - Shows when asset is selected */}
+              {selectedAsset && (
+                <div>
+                  <PriceChart
+                    symbol={selectedAsset}
+                    targetPrice={targetPrice ? parseFloat(targetPrice) : undefined}
+                  />
+                </div>
+              )}
+
               {/* Benefits */}
               <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-4 border-white/50">
                 <h2 className="text-2xl font-black text-[#0A4A7C] mb-8">Keuntungan Strategi</h2>
@@ -146,9 +160,9 @@ export default function CashSecuredPut() {
                   <div>
                     <h3 className="font-black text-yellow-700 mb-2 text-lg">Perhatian</h3>
                     <ul className="space-y-2 text-sm text-yellow-800 font-medium">
-                      <li>• Kamu wajib beli aset jika harga turun di bawah strike price</li>
-                      <li>• Maksimal profit terbatas pada premium yang diterima</li>
-                      <li>• Pastikan kamu siap hold aset jangka panjang jika ter-exercise</li>
+                      <li>• Kamu wajib beli aset jika harga turun ke/di bawah harga target</li>
+                      <li>• Maksimal profit = cashback yang kamu terima di awal</li>
+                      <li>• Pastikan kamu siap hold aset jangka panjang jika harga turun</li>
                     </ul>
                   </div>
                 </div>
@@ -162,7 +176,7 @@ export default function CashSecuredPut() {
 
                 {/* Asset Selection */}
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-500 mb-3">Pilih Aset</label>
+                  <label className="block text-sm font-bold text-gray-500 mb-3">1. Pilih Aset Target</label>
                   <div className="space-y-3">
                     {assets.map((asset) => (
                       <button
@@ -175,7 +189,7 @@ export default function CashSecuredPut() {
                       >
                         <div className="flex items-center justify-between mb-1">
                           <span className={`font-bold ${selectedAsset === asset.symbol ? 'text-[#0A4A7C]' : 'text-gray-700'}`}>{asset.symbol}</span>
-                          <span className="text-xs text-green-600 font-bold bg-green-100 px-2 py-1 rounded-lg">{asset.currentAPY}% APY</span>
+                          <span className="text-xs text-gray-600 font-bold">Rp {(asset.currentPrice / 1000000).toFixed(0)}jt</span>
                         </div>
                         <p className="text-xs text-gray-500 font-medium">{asset.name}</p>
                       </button>
@@ -183,36 +197,62 @@ export default function CashSecuredPut() {
                   </div>
                 </div>
 
+                {/* Target Price Input - NEW */}
+                <div className="mb-6">
+                  <label className="block text-sm font-bold text-gray-500 mb-2">2. Mau Beli di Harga Berapa?</label>
+                  {selectedAssetData && (
+                    <p className="text-xs text-gray-500 mb-2 font-medium">
+                      Harga sekarang: Rp {(selectedAssetData.currentPrice / 1000000).toFixed(0)} juta
+                    </p>
+                  )}
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
+                    <input
+                      type="number"
+                      value={targetPrice}
+                      onChange={(e) => setTargetPrice(e.target.value)}
+                      placeholder="38.000.000"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#0A98FF] focus:bg-white transition-all font-bold"
+                    />
+                  </div>
+                  {estimatedPremium && (
+                    <p className="text-xs text-green-600 mt-2 font-bold">
+                      {estimatedPremium.percentBelow}% di bawah harga pasar
+                    </p>
+                  )}
+                </div>
+
                 {/* Amount Input */}
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-500 mb-2">Jumlah Investasi</label>
+                  <label className="block text-sm font-bold text-gray-500 mb-2">3. Jumlah Investasi</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
                     <input
                       type="number"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      placeholder="1.000.000"
+                      placeholder="10.000.000"
                       className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#0A98FF] focus:bg-white transition-all font-bold"
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-2 font-medium">Minimal: Rp {(strategyInfo.minInvestment / 1000000).toFixed(1)}jt</p>
                 </div>
 
-                {/* Estimated Returns */}
-                {estimatedReturns && (
-                  <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
-                    <h3 className="text-sm font-bold text-blue-600 mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" /> Estimasi Return
+                {/* Cashback Display */}
+                {estimatedPremium && (
+                  <div className="mb-6 p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl">
+                    <h3 className="text-sm font-bold text-green-700 mb-3 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4" /> Cashback yang Didapat
                     </h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500 font-medium">Per Bulan</span>
-                        <span className="text-[#0A4A7C] font-black">Rp {(estimatedReturns.monthly / 1000).toFixed(0)}rb</span>
+                        <span className="text-sm text-gray-600 font-medium">Cashback Instant</span>
+                        <span className="text-green-600 font-black text-xl">Rp {(estimatedPremium.cashback / 1000).toFixed(0)}rb</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500 font-medium">Per Tahun</span>
-                        <span className="text-green-600 font-black">Rp {(estimatedReturns.yearly / 1000000).toFixed(1)}jt</span>
+                      <div className="pt-3 border-t border-green-200">
+                        <p className="text-xs text-gray-600 font-medium">
+                          💰 Cashback langsung masuk saat order aktif!
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -220,17 +260,17 @@ export default function CashSecuredPut() {
 
                 {/* Action Button */}
                 <button
-                  disabled={!amount || parseFloat(amount) < strategyInfo.minInvestment}
-                  className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg text-lg ${amount && parseFloat(amount) >= strategyInfo.minInvestment
+                  disabled={!amount || !targetPrice || parseFloat(amount) < strategyInfo.minInvestment}
+                  className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg text-lg ${amount && targetPrice && parseFloat(amount) >= strategyInfo.minInvestment
                     ? 'bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white hover:scale-[1.02] hover:shadow-xl border-b-4 border-black/20 active:border-b-0 active:translate-y-1'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                 >
-                  Mulai Investasi
+                  Pasang Antrian Beli
                 </button>
 
                 <p className="text-xs text-center text-gray-400 mt-4 font-medium">
-                  Dana akan langsung dialokasikan ke strategi Cash-Secured Put
+                  Cashback langsung masuk saat order aktif
                 </p>
               </div>
             </div>
