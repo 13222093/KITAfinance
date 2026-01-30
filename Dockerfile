@@ -68,8 +68,7 @@ ENV GROUP_VAULT_ADDRESS_MAINNET=0x0000000000000000000000000000000000000000
 
 WORKDIR /app
 
-COPY --from=backend-builder --chown=appuser:nodejs /app/backend ./
-
+COPY --from=backend-builder /app/backend ./
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
