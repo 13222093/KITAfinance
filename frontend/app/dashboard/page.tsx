@@ -553,40 +553,40 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Solo Strategy Modal */}
+      {/* Solo Strategy Modal - Enhanced Design */}
       {
         showSoloModal && (
-          <div className="fixed inset-0 bg-[#0A4A7C]/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 py-8">
-            <div className="bg-white/15 backdrop-blur-md rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-white/20">
-              {/* Modal Header */}
-              <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b-2 border-white/20 p-6 flex items-center justify-between">
+          <div className="fixed inset-0 bg-[#0A4A7C]/90 backdrop-blur-md flex items-end md:items-center justify-center z-50">
+            <div className="bg-white w-full h-[95vh] md:h-auto md:max-h-[90vh] md:rounded-3xl md:max-w-4xl overflow-y-auto shadow-2xl">
+              {/* Modal Header - Gradient Design */}
+              <div className="sticky top-0 bg-gradient-to-r from-[#C15BFF] via-[#0A98FF] to-[#00FFF0] text-white p-6 md:p-8 flex items-center justify-between z-10 shadow-lg">
                 <div>
-                  <h2 className="text-heading text-white mb-1">Pilih Strategi Nabung Solo</h2>
-                  <p className="text-body text-white/70">Pilih strategi yang sesuai dengan tujuan investasimu</p>
+                  <h2 className="text-2xl md:text-3xl font-black drop-shadow-lg mb-1">Pilih Strategi Nabung Solo</h2>
+                  <p className="text-sm md:text-base text-white/90 font-semibold">Pilih strategi yang sesuai dengan tujuan investasimu</p>
                 </div>
                 <button
                   onClick={() => setShowSoloModal(false)}
-                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors"
+                  className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all hover:scale-110 flex-shrink-0 ml-4"
                 >
-                  <X className="w-5 h-5 text-white" />
+                  <X className="w-6 h-6 text-white" />
                 </button>
               </div>
 
-              {/* Modal Content */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Modal Content - Enhanced Cards */}
+              <div className="p-4 md:p-8 bg-gray-50">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   {soloStrategies.map((strategy) => {
                     const Icon = strategy.icon;
-                    const colorClasses = {
-                      blue: 'bg-[#0284C7]/20 text-[#00FFF0] group-hover:bg-[#0284C7]/30',
-                      green: 'bg-green-500/20 text-green-400 group-hover:bg-green-500/30',
-                      purple: 'bg-[#A855F7]/20 text-[#A855F7] group-hover:bg-[#A855F7]/30',
-                      red: 'bg-red-500/20 text-red-400 group-hover:bg-red-500/30',
+                    const gradientClasses = {
+                      blue: 'from-[#00FFF0] to-[#0A98FF]',
+                      green: 'from-green-400 to-green-600',
+                      purple: 'from-[#C15BFF] to-[#9333EA]',
+                      red: 'from-red-400 to-red-600',
                     };
                     const riskColors = {
-                      Low: 'bg-green-500/20 text-green-400',
-                      Medium: 'bg-yellow-500/20 text-yellow-400',
-                      High: 'bg-red-500/20 text-red-400',
+                      Low: 'bg-green-100 text-green-700 border-green-200',
+                      Medium: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                      High: 'bg-red-100 text-red-700 border-red-200',
                     };
 
                     const strategyLinks: { [key: number]: string } = {
@@ -600,25 +600,26 @@ export default function Dashboard() {
                       <Link
                         key={strategy.id}
                         href={strategyLinks[strategy.id]}
-                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all text-left group block"
+                        className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border-2 border-gray-200 hover:border-gray-300 hover:shadow-2xl hover:scale-[1.02] transition-all text-left group block"
                       >
                         <div className="flex items-start gap-4 mb-4">
-                          <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors ${colorClasses[strategy.color as keyof typeof colorClasses]}`}>
-                            <Icon className="w-7 h-7" />
+                          <div className={`w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-br ${gradientClasses[strategy.color as keyof typeof gradientClasses]} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform`}>
+                            <Icon className="w-8 h-8 md:w-9 md:h-9 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="subheading text-white mb-1">{strategy.title}</h3>
-                            <p className="text-sm text-white/70 mb-2">{strategy.subtitle}</p>
-                            <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${riskColors[strategy.risk as keyof typeof riskColors]}`}>
+                            <h3 className="text-xl md:text-2xl font-black text-[#0A4A7C] mb-1">{strategy.title}</h3>
+                            <p className="text-sm md:text-base text-gray-600 font-semibold mb-2">{strategy.subtitle}</p>
+                            <span className={`inline-block px-3 py-1 text-xs font-bold rounded-full border ${riskColors[strategy.risk as keyof typeof riskColors]}`}>
                               Risk: {strategy.risk}
                             </span>
                           </div>
                         </div>
-                        <p className="body-text text-white/90">{strategy.description}</p>
-                        <div className="mt-4 pt-4 border-t-2 border-white/20">
-                          <span className="text-sm text-[#00FFF0] font-semibold group-hover:text-[#ACFFFC] transition-colors">
-                            Pilih Strategi →
+                        <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">{strategy.description}</p>
+                        <div className="pt-4 border-t-2 border-gray-200 flex items-center justify-between">
+                          <span className="text-sm md:text-base text-[#0A98FF] font-black group-hover:text-[#00FFF0] transition-colors">
+                            Pilih Strategi
                           </span>
+                          <ArrowUpRight className="w-5 h-5 text-[#0A98FF] group-hover:text-[#00FFF0] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                         </div>
                       </Link>
                     );

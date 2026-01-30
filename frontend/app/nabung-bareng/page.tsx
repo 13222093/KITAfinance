@@ -399,17 +399,17 @@ export default function NabungBareng() {
         </div>
       </section>
 
-      {/* Create Group Modal */}
+      {/* Create Group Modal - Enhanced Design */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-[#0A4A7C]/80 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-white/15 backdrop-blur-md rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-white/20">
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b-2 border-white/20 p-6 flex items-center justify-between">
+        <div className="fixed inset-0 bg-[#0A4A7C]/90 backdrop-blur-md flex items-end md:items-center justify-center z-50">
+          <div className="bg-white w-full h-[95vh] md:h-auto md:max-h-[90vh] md:rounded-3xl md:max-w-2xl overflow-y-auto shadow-2xl">
+            {/* Modal Header - Gradient Design */}
+            <div className="sticky top-0 bg-gradient-to-r from-[#FFBC57] via-[#FF9500] to-[#F97316] text-white p-6 md:p-8 flex items-center justify-between z-10 shadow-lg">
               <div>
-                <h2 className="text-heading text-white mb-1">
+                <h2 className="text-2xl md:text-3xl font-black drop-shadow-lg mb-1">
                   {createGroupStep === 1 ? 'Buat Grup Baru' : 'Ajak Teman'}
                 </h2>
-                <p className="text-body text-white/70">
+                <p className="text-sm md:text-base text-white/90 font-semibold">
                   {createGroupStep === 1
                     ? 'Isi detail grup nabung bareng kamu'
                     : 'Pilih teman atau bagikan link untuk join grup'}
@@ -421,47 +421,47 @@ export default function NabungBareng() {
                   setCreateGroupStep(1);
                   setSelectedFriends([]);
                 }}
-                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all hover:scale-110 flex-shrink-0 ml-4"
               >
-                <X className="w-5 h-5 text-white" />
+                <X className="w-6 h-6 text-white" />
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-6 space-y-6">
+            {/* Modal Content - Enhanced Form */}
+            <div className="p-4 md:p-8 bg-gray-50 space-y-6">
               {createGroupStep === 1 ? (
                 // Step 1: Form Buat Grup
                 <>
                   {/* Group Name */}
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Nama Grup</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Nama Grup</label>
                     <input
                       type="text"
                       placeholder="Contoh: Tim Startup Gaji Pas"
-                      className="w-full px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00FFF0]"
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
                     />
                   </div>
 
                   {/* Target Amount */}
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Target Dana</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Target Dana</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50">Rp</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">Rp</span>
                       <input
                         type="number"
                         placeholder="50.000.000"
-                        className="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00FFF0]"
+                        className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   {/* Max Members */}
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Maksimal Anggota</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Maksimal Anggota</label>
                     <input
                       type="number"
                       placeholder="10"
-                      className="w-full px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00FFF0]"
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
                     />
                   </div>
 
@@ -472,15 +472,15 @@ export default function NabungBareng() {
                         setShowCreateModal(false);
                         setCreateGroupStep(1);
                       }}
-                      className="flex-1 py-3 border-2 border-white/40 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                      className="flex-1 py-3 md:py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-bold"
                     >
                       Batal
                     </button>
                     <button
                       onClick={() => setCreateGroupStep(2)}
-                      className="flex-1 py-3 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-bold shadow-[0_6px_0_0_rgba(255,149,0,0.4)] hover:shadow-[0_8px_0_0_rgba(255,149,0,0.4)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_3px_0_0_rgba(255,149,0,0.4)] transition-all border-2 border-white/20"
+                      className="flex-1 py-3 md:py-4 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                     >
-                      Lanjut
+                      Lanjut →
                     </button>
                   </div>
                 </>
@@ -488,44 +488,44 @@ export default function NabungBareng() {
                 // Step 2: Invite Members
                 <>
                   {/* Invite Link Section */}
-                  <div className="bg-white/10 border-2 border-white/20 rounded-xl p-6">
-                    <h3 className="text-subheading text-white mb-3">Link Undangan Grup</h3>
-                    <p className="text-sm text-white/70 mb-4">Bagikan link ini untuk mengundang teman</p>
-                    <div className="flex items-center gap-2 p-4 bg-white/10 rounded-xl mb-4">
+                  <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
+                    <h3 className="text-xl font-black text-[#0A4A7C] mb-3">Link Undangan Grup</h3>
+                    <p className="text-sm text-gray-600 mb-4">Bagikan link ini untuk mengundang teman</p>
+                    <div className="flex items-center gap-2 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl mb-4">
                       <input
                         type="text"
                         value="https://kita.app/join/abc123xyz"
                         readOnly
-                        className="flex-1 bg-transparent text-white text-sm focus:outline-none"
+                        className="flex-1 bg-transparent text-gray-700 text-sm font-semibold focus:outline-none"
                       />
-                      <button className="p-2 hover:bg-white/20 rounded-lg transition-colors">
-                        <Copy className="w-5 h-5 text-white/70" />
+                      <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
+                        <Copy className="w-5 h-5 text-gray-600" />
                       </button>
                     </div>
-                    <button className="w-full flex items-center justify-center gap-3 p-4 bg-green-500/20 text-green-400 rounded-xl hover:bg-green-500/30 transition-colors font-semibold">
+                    <button className="w-full flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-bold">
                       <MessageCircle className="w-5 h-5" />
-                      <span className="font-semibold">Share via Telegram</span>
+                      <span>Share via Telegram</span>
                     </button>
                   </div>
 
                   {/* Divider */}
                   <div className="flex items-center gap-4">
-                    <div className="flex-1 h-px bg-white/20"></div>
-                    <span className="text-sm text-white/70">atau</span>
-                    <div className="flex-1 h-px bg-white/20"></div>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-sm text-gray-500 font-semibold">atau</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
                   </div>
 
                   {/* Invite KITA Users */}
                   <div>
-                    <h3 className="text-subheading text-white mb-4">Cari & Undang Pengguna KITA</h3>
-                    <p className="text-sm text-white/70 mb-4">Undang teman yang sudah punya akun KITA</p>
+                    <h3 className="text-xl font-black text-[#0A4A7C] mb-4">Cari & Undang Pengguna KITA</h3>
+                    <p className="text-sm text-gray-600 mb-4">Undang teman yang sudah punya akun KITA</p>
 
                     {/* Search Bar */}
                     <div className="mb-4">
                       <input
                         type="text"
                         placeholder="Cari berdasarkan username..."
-                        className="w-full px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00FFF0]"
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
                       />
                     </div>
 
@@ -534,27 +534,27 @@ export default function NabungBareng() {
                       {suggestedFriends.map((friend) => (
                         <label
                           key={friend.id}
-                          className="flex items-center gap-4 p-4 bg-white/10 rounded-xl cursor-pointer hover:bg-white/15 transition-colors"
+                          className="flex items-center gap-4 p-4 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:border-gray-300 hover:shadow-md transition-all"
                         >
                           <input
                             type="checkbox"
                             checked={selectedFriends.includes(friend.id)}
                             onChange={() => toggleFriendSelection(friend.id)}
-                            className="w-5 h-5 text-[#A855F7] rounded focus:ring-2 focus:ring-[#A855F7]"
+                            className="w-5 h-5 text-[#FF9500] rounded focus:ring-2 focus:ring-[#FF9500]"
                           />
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#0284C7] to-[#06B6D4] rounded-xl flex items-center justify-center text-white font-bold">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#FFBC57] to-[#FF9500] rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
                             {friend.avatar}
                           </div>
                           <div className="flex-1">
-                            <p className="text-white font-semibold">{friend.name}</p>
-                            <p className="text-sm text-white/70">{friend.username}</p>
+                            <p className="text-gray-900 font-bold">{friend.name}</p>
+                            <p className="text-sm text-gray-600">{friend.username}</p>
                           </div>
                         </label>
                       ))}
                     </div>
                     {selectedFriends.length > 0 && (
-                      <div className="mt-4 p-4 bg-[#A855F7]/10 border-2 border-[#A855F7]/20 rounded-xl">
-                        <p className="text-sm text-[#A855F7]">
+                      <div className="mt-4 p-4 bg-orange-100 border-2 border-orange-200 rounded-xl">
+                        <p className="text-sm text-orange-700 font-bold">
                           {selectedFriends.length} teman dipilih
                         </p>
                       </div>
@@ -565,7 +565,7 @@ export default function NabungBareng() {
                   <div className="flex gap-4 pt-4">
                     <button
                       onClick={() => setCreateGroupStep(1)}
-                      className="flex-1 py-3 border-2 border-white/40 text-white rounded-xl hover:bg-white/10 transition-all font-semibold"
+                      className="flex-1 py-3 md:py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-bold"
                     >
                       Kembali
                     </button>
@@ -575,7 +575,7 @@ export default function NabungBareng() {
                         setCreateGroupStep(1);
                         setSelectedFriends([]);
                       }}
-                      className="flex-1 py-3 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-bold shadow-[0_6px_0_0_rgba(255,149,0,0.4)] hover:shadow-[0_8px_0_0_rgba(255,149,0,0.4)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_3px_0_0_rgba(255,149,0,0.4)] transition-all border-2 border-white/20"
+                      className="flex-1 py-3 md:py-4 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                     >
                       {selectedFriends.length > 0 ? 'Kirim Undangan' : 'Selesai'}
                     </button>
