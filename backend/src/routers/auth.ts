@@ -65,14 +65,22 @@ export const authRouter = new Elysia({ prefix: '/auth' })
         }
 
         // OTP Valid, find or create user
-        let user = await prisma.user.findUnique({
-            where: { phoneNumber: fullPhone }
+        let user = await prisma.user.findFirst({
+            where: {
+                AND: [
+                    { countryCode },
+                    { phoneNumber }
+                ]
+            }
         });
 
         if (!user) {
             // Create new user
             user = await prisma.user.create({
-                data: { phoneNumber: fullPhone }
+                data: { 
+                    countryCode,
+                    phoneNumber
+                }
             });
         }
 

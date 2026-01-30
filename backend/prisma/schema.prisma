@@ -8,7 +8,8 @@ datasource db {
 
 model User {
   id            Int           @id @default(autoincrement())
-  phoneNumber   String?       @unique @map("phone_number") @db.VarChar(20)
+  countryCode   String        @default("+62") @map("country_code")
+  phoneNumber   String        @map("phone_number") @db.VarChar(20)
   walletAddress String?       @unique @map("wallet_address") @db.VarChar(42)
   name          String?       @db.VarChar(100)
   createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -18,6 +19,8 @@ model User {
   groupMembers  GroupMember[]
   positions     Position[]
   proposals     Proposal[]
+
+  @@unique([countryCode, phoneNumber]) 
 
   @@map("users")
 }
