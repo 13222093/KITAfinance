@@ -14,19 +14,48 @@ export default function PhoneInput() {
   const [countryCode, setCountryCode] = useState("+62");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     if (!phoneNumber || phoneNumber.length < 8) {
       setError("Mohon masukkan nomor telepon yang valid");
+      setIsLoading(false);
       return;
     }
 
-    localStorage.setItem("phoneNumber", countryCode + phoneNumber);
-    localStorage.setItem("rawPhoneNumber", phoneNumber);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/auth/request-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phoneNumber: phoneNumber,
+            countryCode: countryCode,
+          }),
+        }
+      );
 
-    router.push("/onboarding/otp");
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem("countryCode", countryCode);
+        localStorage.setItem("phoneNumber", phoneNumber);
+        router.push("/onboarding/otp");
+      } else {
+        setError(data.error || "Terjadi kesalahan. Silakan coba lagi.");
+      }
+    } catch (err) {
+      setError("Gagal menghubungi server. Periksa koneksi internet Anda.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

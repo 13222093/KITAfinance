@@ -16,13 +16,17 @@ async function main() {
   // Configurable Admin Details
   const adminUser = {
     name: 'Super Admin',
-    phoneNumber: '081234567890',
+    countryCode: '+62',
+    phoneNumber: '81234567890',
     walletAddress: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
   }
 
   const user = await prisma.user.upsert({
     where: {
-      phoneNumber: adminUser.phoneNumber,
+      countryCode_phoneNumber: {
+        phoneNumber: adminUser.phoneNumber,
+        countryCode: '+62'
+      }
     },
     update: {}, // Don't update if exists
     create: adminUser,

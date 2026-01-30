@@ -8,14 +8,18 @@ export default function OTPVerification() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const phone = localStorage.getItem('phoneNumber');
-    if (phone) {
+    const country = localStorage.getItem('countryCode');
+    
+    if (phone && country) {
       setPhoneNumber(phone);
+      setCountryCode(country);
     } else {
       router.push('/onboarding/phone');
     }
@@ -67,13 +71,35 @@ export default function OTPVerification() {
     }
   };
 
-  const handleVerify = (code: string) => {
-    if (code === '123456') { // PLACEHOLDER VERIF
-      router.push('/onboarding/profile');
-    } else {
-      setError('Kode verifikasi salah. Silakan coba lagi.');
-      setOtp(['', '', '', '', '', '']);
-      inputRefs.current[0]?.focus();
+  const handleVerify = async (code: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          countryCode: countryCode,
+          code: code,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        if (data.data.name) {
+          router.push('/dashboard');
+        } else {
+          router.push('/onboarding/profile');
+        }
+      } else {
+        setError(data.error || 'Kode verifikasi salah. Silakan coba lagi.');
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+      }
+    } catch (err) {
+      setError('Gagal verifikasi. Periksa koneksi internet Anda.');
     }
   };
 
@@ -110,7 +136,7 @@ export default function OTPVerification() {
             Ketik kode 6 digit yang dikirim ke
           </p>
           <p className="text-body text-gray-800 font-semibold">
-            {phoneNumber}
+            {countryCode}-{phoneNumber}
           </p>
         </div>
 

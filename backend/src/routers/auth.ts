@@ -17,7 +17,7 @@ export const authRouter = new Elysia({ prefix: '/auth' })
         // For this MVP, we'll allow any phone number to request OTP
 
         // Generate OTP (Fixed for dev or random)
-        const code = process.env.NODE_ENV === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
+        const code = process.env.NODE_ENV === 'development' ? '123456' : '123456'; //Math.floor(100000 + Math.random() * 900000).toString();
 
         // Store OTP with 5 min expiry
         otpStore.set(fullPhone, {
@@ -47,7 +47,6 @@ export const authRouter = new Elysia({ prefix: '/auth' })
     .post('/verify-otp', async ({ body }) => {
         const { phoneNumber, countryCode, code } = body;
 
-        // Bug #4 fix: Use fullPhone to match how OTP was stored
         const fullPhone = `${countryCode}${phoneNumber}`;
         const record = otpStore.get(fullPhone);
 
@@ -65,24 +64,19 @@ export const authRouter = new Elysia({ prefix: '/auth' })
         }
 
         // OTP Valid, find or create user
-        let user = await prisma.user.findFirst({
+        const user = await prisma.user.upsert({
             where: {
-                AND: [
-                    { countryCode },
-                    { phoneNumber }
-                ]
-            }
-        });
-
-        if (!user) {
-            // Create new user
-            user = await prisma.user.create({
-                data: { 
+                countryCode_phoneNumber: {
                     countryCode,
                     phoneNumber
                 }
-            });
-        }
+            },
+            update: {},
+            create: { 
+                countryCode,
+                phoneNumber
+            }
+        });
 
         // Clear OTP
         otpStore.delete(fullPhone);
@@ -91,6 +85,7 @@ export const authRouter = new Elysia({ prefix: '/auth' })
             success: true,
             data: {
                 id: user.id,
+                countryCode: user.countryCode,
                 phoneNumber: user.phoneNumber,
                 walletAddress: user.walletAddress,
                 name: user.name

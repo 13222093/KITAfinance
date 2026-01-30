@@ -12,10 +12,11 @@ export function Navbar() {
 
   useEffect(() => {
     const userData = localStorage.getItem('userData');
-    setIsLoggedIn(!!userData);
+    const userSession = localStorage.getItem('userSession');
+    setIsLoggedIn(!!userData || !!userSession);
 
     // TODO: Fetch real user XP data from API
-    if (userData) {
+    if (userData || userSession) {
       // Mock data for now
       setUserXP({
         currentXP: 350,

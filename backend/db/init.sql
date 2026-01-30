@@ -2,11 +2,13 @@
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     country_code VARCHAR(5) NOT NULL,
-    phone_number VARCHAR(20) UNIQUE,
+    phone_number VARCHAR(20) NOT NULL,
     wallet_address VARCHAR(42) UNIQUE,
     name VARCHAR(100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+    CONSTRAINT users_country_code_phone_number_key UNIQUE (country_code, phone_number)
 );
 
 -- Chat history for the AI assistant
@@ -57,6 +59,7 @@ CREATE INDEX idx_users_phone ON users(phone_number);
 CREATE INDEX idx_users_wallet ON users(wallet_address);
 CREATE INDEX idx_chat_user ON chat_history(user_id);
 CREATE INDEX idx_positions_user ON positions(user_id);
+
 -- Grant permissions to nunggu_user
 GRANT USAGE ON SCHEMA public TO nunggu_user;
 GRANT CREATE ON SCHEMA public TO nunggu_user;
