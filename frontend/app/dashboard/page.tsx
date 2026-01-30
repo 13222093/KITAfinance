@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/Navbar';
 import { ChatBot } from '@/components/ChatBot';
-import { TrendingUp, Wallet, Target, Award, ArrowUpRight, ArrowDownRight, Plus, Users, X, TrendingDown, DollarSign, Zap } from 'lucide-react';
+import { TrendingUp, Wallet, Target, Award, ArrowUpRight, ArrowDownRight, Plus, Users, X, TrendingDown, DollarSign, Zap, Sparkles, Trophy, Coins, Rocket, Heart, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -149,24 +149,47 @@ export default function Dashboard() {
   return (
     <>
       <Navbar />
-      <div className="relative min-h-screen bg-gradient-to-br from-[#0A4A7C] via-[#0A98FF] to-[#04877f] pt-24 px-4 pb-24 overflow-hidden">
+
+      {/* HERO SECTION - Solid Gradient Background */}
+      <section className="relative min-h-[50vh] bg-gradient-to-br from-[#FFBC57] via-[#FF9500] to-[#F97316] pt-24 pb-12 overflow-hidden">
         {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(10,152,255,0.3),transparent_50%)] animate-pulse" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,188,87,0.3),transparent_50%)] animate-pulse" />
 
         {/* Floating orbs */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-30 animate-float" />
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#FFBC57] rounded-full blur-3xl opacity-20 animate-float-delayed" />
-          <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-[#00FFF0] rounded-full blur-3xl opacity-25 animate-float-slow" />
+          <div className="absolute top-10 right-20 w-64 h-64 bg-[#FBFF2B] rounded-full blur-3xl opacity-20 animate-float" />
+          <div className="absolute bottom-10 left-20 w-80 h-80 bg-[#00FFF0] rounded-full blur-3xl opacity-15 animate-float-delayed" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
-          {/* HERO CARD - Player Profile (Mobile-First) */}
-          <div className="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 shadow-2xl border-2 border-white/30 hover:border-white/40 transition-all">
+        {/* Floating Icons - Hero Theme */}
+        {/* Rocket - Top Right */}
+        <div className="absolute top-20 right-8 md:right-20 animate-bounce" style={{ animationDelay: '0.2s' }}>
+          <div className="w-12 h-12 bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-xl flex items-center justify-center shadow-xl rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <Rocket className="w-6 h-6 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Star - Top Left */}
+        <div className="absolute top-32 left-12 md:left-24 animate-pulse" style={{ animationDelay: '0.5s' }}>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-lg flex items-center justify-center shadow-xl -rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <Star className="w-5 h-5 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Trophy - Bottom Left */}
+        <div className="absolute bottom-16 left-8 md:left-16 animate-spin-slow">
+          <div className="w-14 h-14 bg-gradient-to-br from-[#C15BFF] to-[#9333EA] rounded-full flex items-center justify-center shadow-2xl backdrop-blur-sm border-2 border-white/40">
+            <Trophy className="w-7 h-7 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          {/* HERO CARD - Solid Gradient Card */}
+          <div className="bg-gradient-to-br from-white to-white/95 rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 shadow-2xl border-4 border-white/50">
             <div className="flex items-center gap-4 md:gap-6">
               {/* Level Badge/Avatar */}
               <div className="relative">
-                <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#FBFF2B] via-[#FFBC57] to-[#FF9500] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/30 transform hover:scale-110 hover:rotate-3 transition-all">
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#FBFF2B] via-[#FFBC57] to-[#FF9500] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl border-4 border-orange-200 transform hover:scale-110 hover:rotate-3 transition-all">
                   <span className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">5</span>
                 </div>
                 {/* XP Badge */}
@@ -177,91 +200,143 @@ export default function Dashboard() {
 
               {/* User Info */}
               <div className="flex-1 min-w-0">
-                <h1 className="text-2xl md:text-3xl font-black text-white mb-1 drop-shadow-lg truncate">
+                <h1 className="text-2xl md:text-3xl font-black text-[#0A4A7C] mb-1 truncate">
                   Hi, {userData?.user?.name || 'Investor'}! 👋
                 </h1>
-                <p className="text-sm md:text-base text-white/80 mb-3">Trader Aktif • On Fire!</p>
+                <p className="text-sm md:text-base text-gray-600 mb-3 font-semibold">Trader Aktif • On Fire!</p>
 
                 {/* XP Bar */}
                 <div className="mb-2">
-                  <div className="flex items-center justify-between text-xs md:text-sm text-white/90 mb-1.5">
+                  <div className="flex items-center justify-between text-xs md:text-sm text-gray-700 mb-1.5">
                     <span className="font-bold">XP Progress</span>
                     <span className="font-bold">350 / 500 XP</span>
                   </div>
-                  <div className="relative h-3 md:h-4 bg-white/20 rounded-full overflow-hidden border-2 border-white/30 shadow-inner">
+                  <div className="relative h-3 md:h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                     <div
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#00FFF0] via-[#0A98FF] to-[#C15BFF] rounded-full transition-all duration-500"
                       style={{ width: '70%' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
                   </div>
                 </div>
 
                 {/* Streak Counter */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/30 to-red-500/30 backdrop-blur-sm px-3 py-1.5 rounded-full border-2 border-orange-400/40">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1.5 rounded-full shadow-lg">
                   <span className="text-lg md:text-xl">🔥</span>
                   <span className="text-xs md:text-sm font-black text-white">7 Day Streak!</span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* QUICK STATS - Horizontal Scroll (Story Style) */}
+      {/* STATS SECTION - White Background */}
+      <section className="relative py-12 md:py-16 bg-white overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle, #0A4A7C 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+
+        {/* Floating Icons - Stats Theme */}
+        {/* Coins - Top Right */}
+        <div className="absolute top-12 right-8 md:right-20 animate-spin-slow">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border-2 border-orange-200">
+            <Coins className="w-6 h-6 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Sparkles - Bottom Left */}
+        <div className="absolute bottom-12 left-8 md:left-16 animate-pulse" style={{ animationDelay: '0.7s' }}>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#C15BFF] to-[#A855F7] rounded-lg flex items-center justify-center shadow-xl rotate-12 backdrop-blur-sm border-2 border-purple-200">
+            <Sparkles className="w-5 h-5 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          {/* QUICK STATS - White Cards with Solid Gradients */}
           <div className="overflow-hidden -mx-4 md:mx-0">
             <div className="flex gap-3 md:gap-4 px-4 md:px-0 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-              {/* Total Balance */}
-              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#00FFF0]/20 to-[#0A98FF]/20 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-xl border-2 border-[#00FFF0]/30 hover:scale-105 transition-all snap-start">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
+              {/* Total Balance - Solid Gradient Card */}
+              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl border-2 border-white/30 hover:scale-105 hover:-translate-y-1 transition-all snap-start">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
                   <Wallet className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
-                <p className="text-xs md:text-sm text-white/70 mb-1 font-semibold">Total Balance</p>
+                <p className="text-xs md:text-sm text-white/80 mb-1 font-semibold">Total Balance</p>
                 <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
                   Rp {(stats.totalBalance / 1000000).toFixed(1)}jt
                 </h3>
-                <span className="inline-flex items-center gap-1 text-xs text-green-400 font-bold mt-1">
+                <span className="inline-flex items-center gap-1 text-xs text-white font-bold mt-1 bg-white/20 px-2 py-0.5 rounded-full">
                   <ArrowUpRight className="w-3 h-3" />
                   +12.5%
                 </span>
               </div>
 
-              {/* Total Yield */}
-              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-xl border-2 border-green-400/30 hover:scale-105 transition-all snap-start">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
+              {/* Total Yield - Solid Gradient Card */}
+              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl border-2 border-white/30 hover:scale-105 hover:-translate-y-1 transition-all snap-start">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
                   <TrendingUp className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
-                <p className="text-xs md:text-sm text-white/70 mb-1 font-semibold">Total Yield</p>
-                <h3 className="text-xl md:text-2xl font-black text-green-300 drop-shadow-lg">
+                <p className="text-xs md:text-sm text-white/80 mb-1 font-semibold">Total Yield</p>
+                <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
                   Rp {(stats.totalYield / 1000000).toFixed(2)}jt
                 </h3>
               </div>
 
-              {/* Active Positions */}
-              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#FFBC57]/20 to-[#FF9500]/20 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-xl border-2 border-[#FFBC57]/30 hover:scale-105 transition-all snap-start">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#FFBC57] to-[#FF9500] rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
+              {/* Active Positions - Solid Gradient Card */}
+              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#FFBC57] to-[#FF9500] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl border-2 border-white/30 hover:scale-105 hover:-translate-y-1 transition-all snap-start">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
                   <Award className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
-                <p className="text-xs md:text-sm text-white/70 mb-1 font-semibold">Active Positions</p>
-                <h3 className="text-xl md:text-2xl font-black text-[#FFBC57] drop-shadow-lg">
+                <p className="text-xs md:text-sm text-white/80 mb-1 font-semibold">Active Positions</p>
+                <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
                   {stats.activePositions}
                 </h3>
               </div>
 
-              {/* Target Reached */}
-              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#C15BFF]/20 to-[#FBFF2B]/20 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-xl border-2 border-[#C15BFF]/30 hover:scale-105 transition-all snap-start">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#C15BFF] to-[#FBFF2B] rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
+              {/* Target Reached - Solid Gradient Card */}
+              <div className="min-w-[160px] md:min-w-[200px] flex-1 bg-gradient-to-br from-[#C15BFF] to-[#A855F7] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl border-2 border-white/30 hover:scale-105 hover:-translate-y-1 transition-all snap-start">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg mb-3">
                   <Target className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
-                <p className="text-xs md:text-sm text-white/70 mb-1 font-semibold">Target Reached</p>
-                <h3 className="text-xl md:text-2xl font-black text-[#FBFF2B] drop-shadow-lg">
+                <p className="text-xs md:text-sm text-white/80 mb-1 font-semibold">Target Reached</p>
+                <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
                   {stats.targetReached || 0}%
                 </h3>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* DAILY MISSION BANNER */}
+      {/* ACTIONS SECTION - Purple/Blue Gradient */}
+      <section className="relative py-12 md:py-16 bg-gradient-to-br from-[#C15BFF] via-[#0A98FF] to-[#0A4A7C] overflow-hidden">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_50%,rgba(193,91,255,0.3),transparent_50%)] animate-pulse" />
+
+        {/* Floating orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 left-20 w-64 h-64 bg-[#FBFF2B] rounded-full blur-3xl opacity-15 animate-float" />
+          <div className="absolute bottom-10 right-20 w-80 h-80 bg-[#00FFF0] rounded-full blur-3xl opacity-10 animate-float-delayed" />
+        </div>
+
+        {/* Floating Icons - Action Theme */}
+        {/* Zap - Top Right */}
+        <div className="absolute top-16 right-8 md:right-20 animate-pulse" style={{ animationDelay: '0.3s' }}>
+          <div className="w-12 h-12 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-xl flex items-center justify-center shadow-xl rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <Zap className="w-6 h-6 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Heart - Bottom Left */}
+        <div className="absolute bottom-16 left-8 md:left-16 animate-bounce" style={{ animationDelay: '0.6s' }}>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#FF6B9D] to-[#C15BFF] rounded-lg flex items-center justify-center shadow-xl -rotate-12 backdrop-blur-sm border-2 border-white/30">
+            <Heart className="w-5 h-5 text-white drop-shadow-lg" />
+          </div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 space-y-6">
+          {/* DAILY MISSION BANNER - Glassmorphic */}
           <Link href="/missions" className="block group">
-            <div className="bg-gradient-to-r from-[#C15BFF]/30 via-[#0A98FF]/30 to-[#00FFF0]/30 backdrop-blur-xl rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-2xl border-2 border-[#C15BFF]/40 hover:border-[#C15BFF]/60 transition-all hover:-translate-y-1">
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-2xl border-2 border-white/30 hover:border-white/50 transition-all hover:-translate-y-1">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform flex-shrink-0">
                   <Target className="w-7 h-7 md:w-8 md:h-8 text-white" />
@@ -280,17 +355,14 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          {/* ACTION CARDS */}
+          {/* ACTION CARDS - Solid Gradient Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <button
               onClick={() => setShowSoloModal(true)}
-              className="group relative overflow-hidden bg-gradient-to-br from-[#00FFF0]/20 to-[#0A98FF]/20 backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-[#00FFF0]/40 hover:border-[#00FFF0]/60 hover:scale-[1.02] hover:-translate-y-1 transition-all text-left"
+              className="group relative overflow-hidden bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/30 hover:border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all text-left"
             >
-              {/* Animated background orb */}
-              <div className="absolute -right-8 -top-8 w-32 h-32 md:w-40 md:h-40 bg-[#00FFF0] rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity" />
-
               <div className="relative flex items-center gap-4">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform flex-shrink-0">
                   <Plus className="w-8 h-8 md:w-10 md:h-10 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -300,12 +372,9 @@ export default function Dashboard() {
               </div>
             </button>
 
-            <Link href="/nabung-bareng" className="group relative overflow-hidden block bg-gradient-to-br from-[#C15BFF]/20 to-[#0A98FF]/20 backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-[#C15BFF]/40 hover:border-[#C15BFF]/60 hover:scale-[1.02] hover:-translate-y-1 transition-all text-left">
-              {/* Animated background orb */}
-              <div className="absolute -right-8 -top-8 w-32 h-32 md:w-40 md:h-40 bg-[#C15BFF] rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity" />
-
+            <Link href="/nabung-bareng" className="group relative overflow-hidden block bg-gradient-to-br from-[#C15BFF] to-[#9333EA] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/30 hover:border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all text-left">
               <div className="relative flex items-center gap-4">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C15BFF] to-[#0A98FF] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform flex-shrink-0">
                   <Users className="w-8 h-8 md:w-10 md:h-10 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -315,94 +384,128 @@ export default function Dashboard() {
               </div>
             </Link>
           </div>
+        </div>
+      </section>
 
-          {/* ACTIVE POSITIONS - Horizontal Scroll */}
-          <div>
-            <div className="flex items-center justify-between mb-4 px-1">
-              <h2 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">Active Positions 🚀</h2>
-              <Link href="/vaults" className="text-sm md:text-base font-bold text-[#00FFF0] hover:text-[#ACFFFC] transition-colors">
-                View All →
-              </Link>
-            </div>
+      {/* POSITIONS SECTION - White Background */}
+      <section className="relative py-12 md:py-16 bg-white overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle, #0A4A7C 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
 
-            <div className="overflow-hidden -mx-4 md:mx-0">
-              <div className="flex gap-4 px-4 md:px-0 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-                {positions.map((position: Position, index: number) => {
-                  const gradients = [
-                    { from: '#00FFF0', to: '#0A98FF' },
-                    { from: '#C15BFF', to: '#0A98FF' },
-                    { from: '#FFBC57', to: '#FF9500' },
-                  ];
-                  const gradient = gradients[index % 3];
+        {/* Floating Icons - Portfolio Theme */}
+        {/* Dollar Sign - Top Left */}
+        <div className="absolute top-12 left-8 md:left-20 animate-pulse" style={{ animationDelay: '0.4s' }}>
+          <div className="w-12 h-12 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border-2 border-green-200">
+            <DollarSign className="w-6 h-6 text-white drop-shadow-lg" />
+          </div>
+        </div>
 
-                  return (
-                    <div
-                      key={position.id}
-                      className="min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white/10 backdrop-blur-lg rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-xl border-2 border-white/20 hover:border-white/40 hover:scale-105 transition-all snap-start"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl md:text-2xl shadow-lg"
-                            style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
-                          >
-                            {position.name.charAt(0)}
-                          </div>
-                          <div>
-                            <h4 className="font-black text-white text-base md:text-lg">{position.name}</h4>
-                            <span className="inline-block px-2 py-0.5 bg-green-500/20 text-green-300 text-xs font-bold rounded-full backdrop-blur-sm border border-green-400/30">
-                              {position.status}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+        {/* Trending Up - Bottom Right */}
+        <div className="absolute bottom-12 right-8 md:right-16 animate-bounce" style={{ animationDelay: '0.8s' }}>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#00FFF0] to-[#0A98FF] rounded-lg flex items-center justify-center shadow-xl -rotate-12 backdrop-blur-sm border-2 border-cyan-200">
+            <TrendingUp className="w-5 h-5 text-white drop-shadow-lg" />
+          </div>
+        </div>
 
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-white/70">Balance</span>
-                          <span className="font-black text-white text-lg md:text-xl drop-shadow-lg">
-                            Rp {(position.balance / 1000000).toFixed(1)}jt
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-white/70">APY</span>
-                          <span className="font-bold text-green-300 text-base md:text-lg">{position.apy}%</span>
-                        </div>
-                      </div>
-
-                      {/* Mini chart placeholder */}
-                      <div className="h-12 bg-white/5 rounded-xl flex items-end gap-1 px-2 overflow-hidden">
-                        {[40, 60, 45, 75, 50, 80, 65, 90].map((height, i) => (
-                          <div
-                            key={i}
-                            className="flex-1 bg-gradient-to-t rounded-t transition-all hover:opacity-80"
-                            style={{
-                              height: `${height}%`,
-                              background: `linear-gradient(to top, ${gradient.from}, ${gradient.to})`
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* Add Position Card */}
-                <button
-                  onClick={() => setShowSoloModal(true)}
-                  className="min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white/5 backdrop-blur-lg rounded-2xl md:rounded-3xl p-6 shadow-xl border-2 border-dashed border-white/30 hover:border-white/50 hover:bg-white/10 transition-all snap-start flex flex-col items-center justify-center gap-3 group"
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Plus className="w-8 h-8 text-white" />
-                  </div>
-                  <p className="font-bold text-white text-lg">Tambah Posisi Baru</p>
-                  <p className="text-sm text-white/70">Mulai strategi baru</p>
-                </button>
-              </div>
-            </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          {/* ACTIVE POSITIONS - White Cards */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl md:text-3xl font-black text-[#0A4A7C]">Active Positions 🚀</h2>
+            <Link href="/vaults" className="text-sm md:text-base font-bold text-[#0A98FF] hover:text-[#00FFF0] transition-colors">
+              View All →
+            </Link>
           </div>
 
-          {/* RECENT ACTIVITIES - Timeline Style */}
+          <div className="overflow-hidden -mx-4 md:mx-0">
+            <div className="flex gap-4 px-4 md:px-0 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
+              {positions.map((position: Position, index: number) => {
+                const gradients = [
+                  { from: '#00FFF0', to: '#0A98FF', bg: 'from-[#00FFF0] to-[#0A98FF]' },
+                  { from: '#C15BFF', to: '#9333EA', bg: 'from-[#C15BFF] to-[#9333EA]' },
+                  { from: '#FFBC57', to: '#FF9500', bg: 'from-[#FFBC57] to-[#FF9500]' },
+                ];
+                const gradient = gradients[index % 3];
+
+                return (
+                  <div
+                    key={position.id}
+                    className="min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-2xl border-2 border-gray-200 hover:border-gray-300 hover:scale-105 hover:-translate-y-1 transition-all snap-start"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl md:text-2xl shadow-lg bg-gradient-to-br ${gradient.bg}`}
+                        >
+                          {position.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="font-black text-[#0A4A7C] text-base md:text-lg">{position.name}</h4>
+                          <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">
+                            {position.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 font-semibold">Balance</span>
+                        <span className="font-black text-[#0A4A7C] text-lg md:text-xl">
+                          Rp {(position.balance / 1000000).toFixed(1)}jt
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 font-semibold">APY</span>
+                        <span className="font-bold text-green-600 text-base md:text-lg">{position.apy}%</span>
+                      </div>
+                    </div>
+
+                    {/* Mini chart placeholder */}
+                    <div className="h-12 bg-gray-100 rounded-xl flex items-end gap-1 px-2 overflow-hidden">
+                      {[40, 60, 45, 75, 50, 80, 65, 90].map((height, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 rounded-t transition-all hover:opacity-80"
+                          style={{
+                            height: `${height}%`,
+                            background: `linear-gradient(to top, ${gradient.from}, ${gradient.to})`
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Add Position Card */}
+              <button
+                onClick={() => setShowSoloModal(true)}
+                className="min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white rounded-2xl md:rounded-3xl p-6 shadow-xl border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all snap-start flex flex-col items-center justify-center gap-3 group"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <Plus className="w-8 h-8 text-gray-600" />
+                </div>
+                <p className="font-bold text-[#0A4A7C] text-lg">Tambah Posisi Baru</p>
+                <p className="text-sm text-gray-600">Mulai strategi baru</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ACTIVITIES SECTION - Glassmorphic Gradient */}
+      <section className="relative py-12 md:py-16 bg-gradient-to-br from-[#0A4A7C] via-[#0A98FF] to-[#04877f] overflow-hidden">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(10,152,255,0.3),transparent_50%)] animate-pulse" />
+
+        {/* Floating orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 right-20 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20 animate-float" />
+          <div className="absolute bottom-10 left-20 w-80 h-80 bg-[#FBFF2B] rounded-full blur-3xl opacity-15 animate-float-delayed" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          {/* RECENT ACTIVITIES - Glassmorphic Card */}
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">Recent Activities 📊</h2>
@@ -419,11 +522,10 @@ export default function Dashboard() {
                     <div className="absolute left-8 top-16 w-0.5 h-6 bg-white/20" />
                   )}
 
-                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg ${
-                    activity.type === 'deposit' ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg ${activity.type === 'deposit' ? 'bg-gradient-to-br from-green-400 to-green-600' :
                     activity.type === 'yield' ? 'bg-gradient-to-br from-[#00FFF0] to-[#0A98FF]' :
-                    'bg-gradient-to-br from-red-400 to-red-600'
-                  }`}>
+                      'bg-gradient-to-br from-red-400 to-red-600'
+                    }`}>
                     {activity.type === 'deposit' ? (
                       <ArrowUpRight className="w-6 h-6 md:w-7 md:h-7 text-white" />
                     ) : activity.type === 'yield' ? (
@@ -439,9 +541,8 @@ export default function Dashboard() {
                   </div>
 
                   <div className="text-right flex-shrink-0">
-                    <p className={`font-black text-base md:text-lg ${
-                      activity.type === 'withdraw' ? 'text-red-400' : 'text-green-300'
-                    }`}>
+                    <p className={`font-black text-base md:text-lg ${activity.type === 'withdraw' ? 'text-red-400' : 'text-green-300'
+                      }`}>
                       {activity.type === 'withdraw' ? '-' : '+'}Rp {(activity.amount / 1000).toFixed(0)}rb
                     </p>
                   </div>
@@ -450,82 +551,84 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Solo Strategy Modal */}
-      {showSoloModal && (
-        <div className="fixed inset-0 bg-[#0A4A7C]/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 py-8">
-          <div className="bg-white/15 backdrop-blur-md rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-white/20">
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b-2 border-white/20 p-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-heading text-white mb-1">Pilih Strategi Nabung Solo</h2>
-                <p className="text-body text-white/70">Pilih strategi yang sesuai dengan tujuan investasimu</p>
+      {
+        showSoloModal && (
+          <div className="fixed inset-0 bg-[#0A4A7C]/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 py-8">
+            <div className="bg-white/15 backdrop-blur-md rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-white/20">
+              {/* Modal Header */}
+              <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b-2 border-white/20 p-6 flex items-center justify-between">
+                <div>
+                  <h2 className="text-heading text-white mb-1">Pilih Strategi Nabung Solo</h2>
+                  <p className="text-body text-white/70">Pilih strategi yang sesuai dengan tujuan investasimu</p>
+                </div>
+                <button
+                  onClick={() => setShowSoloModal(false)}
+                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowSoloModal(false)}
-                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors"
-              >
-                <X className="w-5 h-5 text-white" />
-              </button>
-            </div>
 
-            {/* Modal Content */}
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {soloStrategies.map((strategy) => {
-                  const Icon = strategy.icon;
-                  const colorClasses = {
-                    blue: 'bg-[#0284C7]/20 text-[#00FFF0] group-hover:bg-[#0284C7]/30',
-                    green: 'bg-green-500/20 text-green-400 group-hover:bg-green-500/30',
-                    purple: 'bg-[#A855F7]/20 text-[#A855F7] group-hover:bg-[#A855F7]/30',
-                    red: 'bg-red-500/20 text-red-400 group-hover:bg-red-500/30',
-                  };
-                  const riskColors = {
-                    Low: 'bg-green-500/20 text-green-400',
-                    Medium: 'bg-yellow-500/20 text-yellow-400',
-                    High: 'bg-red-500/20 text-red-400',
-                  };
+              {/* Modal Content */}
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {soloStrategies.map((strategy) => {
+                    const Icon = strategy.icon;
+                    const colorClasses = {
+                      blue: 'bg-[#0284C7]/20 text-[#00FFF0] group-hover:bg-[#0284C7]/30',
+                      green: 'bg-green-500/20 text-green-400 group-hover:bg-green-500/30',
+                      purple: 'bg-[#A855F7]/20 text-[#A855F7] group-hover:bg-[#A855F7]/30',
+                      red: 'bg-red-500/20 text-red-400 group-hover:bg-red-500/30',
+                    };
+                    const riskColors = {
+                      Low: 'bg-green-500/20 text-green-400',
+                      Medium: 'bg-yellow-500/20 text-yellow-400',
+                      High: 'bg-red-500/20 text-red-400',
+                    };
 
-                  const strategyLinks: { [key: number]: string } = {
-                    1: '/solo/cash-secured-put',
-                    2: '/solo/covered-call',
-                    3: '/solo/buy-call',
-                    4: '/solo/buy-put',
-                  };
+                    const strategyLinks: { [key: number]: string } = {
+                      1: '/solo/cash-secured-put',
+                      2: '/solo/covered-call',
+                      3: '/solo/buy-call',
+                      4: '/solo/buy-put',
+                    };
 
-                  return (
-                    <Link
-                      key={strategy.id}
-                      href={strategyLinks[strategy.id]}
-                      className="bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all text-left group block"
-                    >
-                      <div className="flex items-start gap-4 mb-4">
-                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors ${colorClasses[strategy.color as keyof typeof colorClasses]}`}>
-                          <Icon className="w-7 h-7" />
+                    return (
+                      <Link
+                        key={strategy.id}
+                        href={strategyLinks[strategy.id]}
+                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all text-left group block"
+                      >
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors ${colorClasses[strategy.color as keyof typeof colorClasses]}`}>
+                            <Icon className="w-7 h-7" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="subheading text-white mb-1">{strategy.title}</h3>
+                            <p className="text-sm text-white/70 mb-2">{strategy.subtitle}</p>
+                            <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${riskColors[strategy.risk as keyof typeof riskColors]}`}>
+                              Risk: {strategy.risk}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="subheading text-white mb-1">{strategy.title}</h3>
-                          <p className="text-sm text-white/70 mb-2">{strategy.subtitle}</p>
-                          <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${riskColors[strategy.risk as keyof typeof riskColors]}`}>
-                            Risk: {strategy.risk}
+                        <p className="body-text text-white/90">{strategy.description}</p>
+                        <div className="mt-4 pt-4 border-t-2 border-white/20">
+                          <span className="text-sm text-[#00FFF0] font-semibold group-hover:text-[#ACFFFC] transition-colors">
+                            Pilih Strategi →
                           </span>
                         </div>
-                      </div>
-                      <p className="body-text text-white/90">{strategy.description}</p>
-                      <div className="mt-4 pt-4 border-t-2 border-white/20">
-                        <span className="text-sm text-[#00FFF0] font-semibold group-hover:text-[#ACFFFC] transition-colors">
-                          Pilih Strategi →
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <ChatBot />
     </>

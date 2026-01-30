@@ -108,29 +108,38 @@ export function ChatBot() {
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Chat Window */}
-          <div className="relative w-full h-[85vh] md:h-[600px] md:w-96 md:fixed md:bottom-32 md:right-8 bg-white md:rounded-2xl rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom-10 pointer-events-auto">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-[#0284C7] to-[#06B6D4] text-white p-4 rounded-t-3xl md:rounded-t-2xl flex items-center justify-between shrink-0">
+          {/* Chat Window - Full Screen on Mobile */}
+          <div className="relative w-full h-screen md:h-[600px] md:w-96 md:fixed md:bottom-32 md:right-8 bg-white md:rounded-2xl rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom-10 pointer-events-auto">
+            {/* Header - Enhanced Design */}
+            <div className="bg-gradient-to-r from-[#C15BFF] via-[#0A98FF] to-[#00FFF0] text-white p-4 md:p-5 rounded-t-3xl md:rounded-t-2xl flex items-center justify-between shrink-0 shadow-lg">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
                   <MessageCircle className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-subheading">KITA AI</h3>
-                  <p className="text-xs opacity-90">Asisten Virtual</p>
+                  <h3 className="text-lg font-black drop-shadow-lg">KITA AI</h3>
+                  <p className="text-xs opacity-90 font-semibold">Asisten Virtual 🤖</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="hover:bg-white/20 rounded-full p-2 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={clearHistory}
+                  className="hover:bg-white/20 rounded-full p-2 transition-colors"
+                  title="Clear History"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="hover:bg-white/20 rounded-full p-2 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            {/* Messages - Enhanced Bubbles */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -138,22 +147,22 @@ export function ChatBot() {
                     }`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2 ${message.role === 'user'
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'bg-white text-gray-800 shadow-sm'
+                    className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-md ${message.role === 'user'
+                      ? 'bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white'
+                      : 'bg-white text-gray-800 border border-gray-200'
                       }`}
                   >
-                    <p className="text-body whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed">{message.content}</p>
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm">
+                  <div className="bg-white text-gray-800 rounded-2xl px-4 py-3 shadow-md border border-gray-200">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
+                      <div className="w-2 h-2 bg-[#0A98FF] rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-[#C15BFF] rounded-full animate-bounce delay-100" />
+                      <div className="w-2 h-2 bg-[#00FFF0] rounded-full animate-bounce delay-200" />
                     </div>
                   </div>
                 </div>
@@ -161,8 +170,8 @@ export function ChatBot() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
-            <div className="p-4 border-t bg-white md:rounded-b-2xl mb-safe">
+            {/* Input - Enhanced Design */}
+            <div className="p-4 border-t border-gray-200 bg-white md:rounded-b-2xl shadow-lg">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -171,14 +180,14 @@ export function ChatBot() {
                   onKeyPress={handleKeyPress}
                   placeholder="Ketik pesan..."
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-black bg-white text-body"
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#0A98FF] focus:border-transparent disabled:bg-gray-100 text-gray-900 bg-white text-sm md:text-base placeholder:text-gray-500"
                 />
                 <button
                   onClick={handleSend}
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-full hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white p-3 rounded-full hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <Send className="w-6 h-6" />
+                  <Send className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
             </div>
