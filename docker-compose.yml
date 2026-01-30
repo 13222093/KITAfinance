@@ -42,6 +42,7 @@ services:
     restart: unless-stopped
     ports:
       - "${BACKEND_PORT:-8000}:8000"
+    command: ["/bin/sh", "-c", "./supply-acc.sh && npm run start"]
     environment:
       NODE_ENV: production
       PORT: 8000

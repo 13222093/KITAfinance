@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Disamain aja sama frontend (20 LTS is good)
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
@@ -69,7 +69,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Samain versi node biar konsisten
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
