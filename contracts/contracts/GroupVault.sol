@@ -101,6 +101,8 @@ contract GroupVault is ReentrancyGuard, Pausable {
     // Aave shares per group
     mapping(uint256 => uint256) public groupAaveShares;
 
+    mapping(uint256 => Group) public groups;
+
     // Configuration
     uint256 public constant MIN_MEMBERS = 2;
     uint256 public constant MAX_MEMBERS = 10;
