@@ -113,6 +113,46 @@ spec:
 
 ---
 # ============================================
+# Database Seeding Job
+# ============================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nunggu-db-seed
+  namespace: nunggu
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: default
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: reletz/nunggu:backend-latest
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -c
+            - |
+              cd /app && \
+              npx prisma generate && \
+              npx prisma db push --accept-data-loss && \
+              npx tsx prisma/seed.ts
+          envFrom:
+            - configMapRef:
+                name: nunggu-config
+            - secretRef:
+                name: nunggu-secrets
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+
+---
+# ============================================
 # Backend Service
 # ============================================
 apiVersion: v1
