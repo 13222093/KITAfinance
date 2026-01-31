@@ -3,12 +3,16 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { XPBar } from '@/components/gamification/XPBar';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Wallet as WalletIcon } from 'lucide-react';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userXP, setUserXP] = useState({ currentXP: 0, levelXP: 100, level: 1 });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
 
   useEffect(() => {
     const userData = localStorage.getItem('userData');
@@ -68,8 +72,38 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Right Section (CTA only) */}
-          <div className="flex items-center gap-4">
+          {/* Desktop Right Section (CTA + Wallet) */}
+          <div className="flex items-center gap-3">
+            {/* Wallet Connect Button (only when logged in) */}
+            {isLoggedIn && (
+              <div className="hidden md:block">
+                {isConnected && address ? (
+                  <div className="flex items-center gap-2">
+                    <div className="px-3 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg text-sm font-semibold flex items-center gap-2">
+                      <WalletIcon className="w-4 h-4" />
+                      {address.slice(0, 6)}...{address.slice(-4)}
+                    </div>
+                    <button
+                      onClick={() => disconnect()}
+                      className="px-3 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+                    >
+                      Disconnect
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      const coinbaseConnector = connectors.find(c => c.name === 'Coinbase Wallet');
+                      if (coinbaseConnector) connect({ connector: coinbaseConnector });
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r from-[#0A98FF] to-[#00FFF0] text-white rounded-lg text-sm font-semibold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg"
+                  >
+                    <WalletIcon className="w-4 h-4" />
+                    Connect Wallet
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Profile/Login Button */}
             <Link

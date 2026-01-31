@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ChatBot } from '@/components/ChatBot';
 import { Award, TrendingUp, Zap, Target, Calendar, Mail, Phone, Edit2, LogOut, HelpCircle, Trophy } from 'lucide-react';
 import Link from 'next/link';
+import { MOCK_USER_STATS } from '@/lib/mockData';
 
 export default function Profile() {
   const router = useRouter();
@@ -16,16 +17,16 @@ export default function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
 
-  // Mock gamification data (synchronized with dashboard and missions)
+  // Use centralized mock gamification data
   const gamificationData = {
-    level: 8,
-    currentXP: 2450,
-    levelXP: 3000,
-    totalXP: 12450,
-    streak: 7,
-    totalTrades: 12,
-    achievements: 5,
-    totalAchievements: 15,
+    level: MOCK_USER_STATS.level,
+    currentXP: MOCK_USER_STATS.currentXP,
+    levelXP: MOCK_USER_STATS.levelXP,
+    totalXP: MOCK_USER_STATS.totalXP,
+    streak: MOCK_USER_STATS.streak,
+    totalTrades: MOCK_USER_STATS.totalTrades,
+    achievements: MOCK_USER_STATS.achievements,
+    totalAchievements: MOCK_USER_STATS.totalAchievements,
   };
 
   useEffect(() => {

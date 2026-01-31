@@ -6,6 +6,7 @@ import { TrendingUp, Wallet, Target, Award, ArrowUpRight, ArrowDownRight, Plus, 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { MOCK_USER_STATS, MOCK_POSITIONS } from '@/lib/mockData';
 
 interface Position {
   id: number;
@@ -25,12 +26,13 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
 
-  // Data dummy (fallback)
+  // Data dummy (fallback) - Use centralized mock data
   const defaultStats = {
-    totalBalance: 0,
-    totalYield: 0,
-    activePositions: 0,
-    monthlyReturn: 0,
+    totalBalance: MOCK_USER_STATS.totalBalance,
+    totalYield: MOCK_USER_STATS.totalYield,
+    activePositions: MOCK_USER_STATS.activePositions,
+    monthlyReturn: MOCK_USER_STATS.monthlyReturn,
+    targetReached: MOCK_USER_STATS.targetReached,
   };
 
   useEffect(() => {
@@ -54,15 +56,7 @@ export default function Dashboard() {
             email: guestUser.email
           },
           stats: defaultStats,
-          positions: [
-            {
-              id: 1,
-              name: 'ETH Covered Call',
-              apy: 5.2,
-              balance: 15000000,
-              status: 'Active'
-            }
-          ], // Provide some dummy data for guest to see UI
+          positions: MOCK_POSITIONS, // Use centralized mock positions
           history: []
         });
         setIsLoading(false);

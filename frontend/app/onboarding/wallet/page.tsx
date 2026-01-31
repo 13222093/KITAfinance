@@ -1,16 +1,13 @@
-'use client';
-
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAccount, useConnect, useSignMessage } from 'wagmi';
 import { Button } from '@/components/ui/Button';
 import { Wallet, ArrowRight, ShieldCheck, CheckCircle2, TrendingUp, Sparkles } from 'lucide-react';
-import { injected } from 'wagmi/connectors';
 
 export default function WalletOnboarding() {
     const router = useRouter();
     const { address, isConnected } = useAccount();
-    const { connect } = useConnect();
+    const { connect, connectors } = useConnect();
     const { signMessageAsync } = useSignMessage();
     const [isLinking, setIsLinking] = useState(false);
     const [error, setError] = useState('');
@@ -23,12 +20,19 @@ export default function WalletOnboarding() {
         }
     }, [router]);
 
-    const handleConnect = async () => {
-        if (!isConnected) {
-            connect({ connector: injected() });
-            return;
+    const handleConnectWallet = async () => {
+        try {
+            // Find MetaMask or any injected wallet connector
+            const injectedConnector = connectors.find(c => c.id === 'injected' || c.name.includes('MetaMask'));
+            if (injectedConnector) {
+                await connect({ connector: injectedConnector });
+            } else {
+                setError('Tidak ada wallet terdeteksi. Install MetaMask atau Coinbase Wallet.');
+            }
+        } catch (err: any) {
+            console.error('Connection error:', err);
+            setError(err.message || 'Gagal menghubungkan wallet');
         }
-        await linkWallet();
     };
 
     const linkWallet = async () => {
@@ -171,7 +175,7 @@ export default function WalletOnboarding() {
                     ) : (
                         <div className="space-y-4">
                             <Button
-                                onClick={() => connect({ connector: injected() })}
+                                onClick={handleConnectWallet}
                                 className="w-full bg-[#FF9500] hover:bg-[#e68600] text-white py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2"
                             >
                                 <Wallet className="w-5 h-5" />

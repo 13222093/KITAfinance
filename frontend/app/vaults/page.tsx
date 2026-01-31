@@ -5,24 +5,13 @@ import { ChatBot } from '@/components/ChatBot';
 import { ArrowLeft, TrendingUp, Wallet, DollarSign, Award, Plus, ArrowUpRight, Sparkles, Trophy, Coins, Rocket, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { MOCK_VAULTS } from '@/lib/mockData';
 
 export default function Vaults() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
 
-  // Dummy data untuk vaults - USDC only
-  const vaults = [
-    {
-      id: 1,
-      name: 'USDC Vault',
-      strategy: 'Cash-Secured Put',
-      balance: 7500000,
-      apy: 8.5,
-      status: 'Active',
-      dailyYield: 1750,
-      totalEarned: 525000,
-      startDate: '10 Jan 2026',
-    },
-  ];
+  // Use centralized mock data for vaults
+  const vaults = MOCK_VAULTS;
 
   const filteredVaults = filterStatus === 'all'
     ? vaults
