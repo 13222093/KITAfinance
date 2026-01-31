@@ -10,11 +10,11 @@ export function MobileNav() {
     const pathname = usePathname();
 
     useEffect(() => {
-        // Check if user is logged in
+        // Check if user is logged in - recheck on every pathname change
         const userData = localStorage.getItem('userData');
         const userSession = localStorage.getItem('userSession');
         setIsLoggedIn(!!userData || !!userSession);
-    }, []);
+    }, [pathname]); // Re-check when route changes after login
 
     // Don't render bottom nav if user is not logged in
     if (!isLoggedIn) {

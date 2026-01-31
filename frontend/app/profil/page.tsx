@@ -16,12 +16,12 @@ export default function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
 
-  // Mock gamification data
+  // Mock gamification data (synchronized with dashboard and missions)
   const gamificationData = {
-    level: 5,
-    currentXP: 350,
-    levelXP: 500,
-    totalXP: 1850,
+    level: 8,
+    currentXP: 2450,
+    levelXP: 3000,
+    totalXP: 12450,
     streak: 7,
     totalTrades: 12,
     achievements: 5,
@@ -74,7 +74,7 @@ export default function Profile() {
       // If we are in session mode, we might want to update session or just local state for now
       // For this MVP, let's update userData in localStorage if it exists, or just state
       if (localStorage.getItem('userData')) {
-          localStorage.setItem('userData', JSON.stringify(updatedUser));
+        localStorage.setItem('userData', JSON.stringify(updatedUser));
       }
       setIsEditing(false);
     }

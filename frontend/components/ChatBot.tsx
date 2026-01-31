@@ -194,10 +194,10 @@ export function ChatBot() {
         </div>
       )}
 
-      {/* Desktop: Bottom-right floating button */}
+      {/* Desktop: Bottom-right floating button - Hidden on mobile (uses MobileNav instead) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-8 w-16 h-16 bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center z-50"
+        className="hidden md:flex fixed bottom-6 right-8 w-16 h-16 bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white rounded-full shadow-2xl hover:scale-110 transition-transform items-center justify-center z-50"
         aria-label="Toggle Chat"
       >
         {isOpen ? (
