@@ -4,7 +4,8 @@ import { Navbar } from '@/components/Navbar';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatBot } from '@/components/ChatBot';
-import { Award, TrendingUp, Zap, Target, Calendar, Mail, Phone, Edit2, LogOut, HelpCircle, Trophy } from 'lucide-react';
+import { Award, TrendingUp, Zap, Target, Calendar, Mail, Phone, Edit2, LogOut, HelpCircle, Trophy, Wallet } from 'lucide-react';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Link from 'next/link';
 import { MOCK_USER_STATS } from '@/lib/mockData';
 
@@ -16,6 +17,11 @@ export default function Profile() {
   const [editedName, setEditedName] = useState('');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+
+  // Wallet connection hooks
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
 
   // Use centralized mock gamification data
   const gamificationData = {
@@ -256,6 +262,69 @@ export default function Profile() {
                   >
                     Simpan
                   </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 🦊 WALLET CONNECTION CARD - Mobile Friendly */}
+          <div className="bg-gradient-to-br from-[#1E1B4B] via-[#312E81] to-[#0A4A7C] rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-2xl border-2 border-white/20 relative overflow-hidden">
+            {/* Floating fox */}
+            <div className="absolute top-3 right-3 text-4xl animate-bounce">🦊</div>
+            <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-[#F6851B] rounded-full blur-3xl opacity-20" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#F6851B] to-[#E2761B] rounded-xl flex items-center justify-center shadow-lg">
+                  <Wallet className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white/60">WALLET</p>
+                  <h3 className="text-lg font-black text-white">MetaMask</h3>
+                </div>
+              </div>
+
+              {isConnected && address ? (
+                <div className="space-y-3">
+                  {/* Connected State */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border-2 border-green-400/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <span className="text-lg">✓</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-green-400 font-bold">Connected</p>
+                        <p className="text-white font-black text-sm truncate">
+                          {address.slice(0, 6)}...{address.slice(-4)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => disconnect()}
+                    className="w-full py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl font-bold text-sm border-2 border-red-400/30 transition-all"
+                  >
+                    Disconnect Wallet
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {/* Not Connected State */}
+                  <p className="text-white/70 text-sm">Hubungkan wallet untuk transaksi on-chain 🔐</p>
+                  <button
+                    onClick={() => {
+                      const injectedConnector = connectors.find(c => c.id === 'injected' || c.name.includes('MetaMask'));
+                      if (injectedConnector) connect({ connector: injectedConnector });
+                    }}
+                    className="w-full py-4 bg-gradient-to-r from-[#F6851B] to-[#E2761B] text-white rounded-xl font-black text-base
+                               shadow-[0_6px_0_0_rgba(194,105,2,1)] hover:shadow-[0_4px_0_0_rgba(194,105,2,1)] hover:translate-y-0.5
+                               active:shadow-[0_2px_0_0_rgba(194,105,2,1)] active:translate-y-1
+                               transition-all flex items-center justify-center gap-3"
+                  >
+                    <span className="text-xl">🦊</span>
+                    Connect MetaMask
+                  </button>
+                  <p className="text-white/50 text-xs text-center">Atau install MetaMask dari metamask.io</p>
                 </div>
               )}
             </div>

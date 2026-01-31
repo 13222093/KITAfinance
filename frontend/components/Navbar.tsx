@@ -93,8 +93,9 @@ export function Navbar() {
                 ) : (
                   <button
                     onClick={() => {
-                      const coinbaseConnector = connectors.find(c => c.name === 'Coinbase Wallet');
-                      if (coinbaseConnector) connect({ connector: coinbaseConnector });
+                      // Use MetaMask/injected wallet (consistent with onboarding)
+                      const injectedConnector = connectors.find(c => c.id === 'injected' || c.name.includes('MetaMask'));
+                      if (injectedConnector) connect({ connector: injectedConnector });
                     }}
                     className="px-4 py-2 bg-gradient-to-r from-[#0A98FF] to-[#00FFF0] text-white rounded-lg text-sm font-semibold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg"
                   >
