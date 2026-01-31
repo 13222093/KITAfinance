@@ -15,7 +15,8 @@ export const userRouter = new Elysia({ prefix: '/user' })
             where: { 
                 OR: [
                     { walletAddress: address },
-                    { phoneNumber: address } // Allow phone lookup too if needed
+                    { phoneNumber: address }, // Allow phone lookup too if needed
+                    { username: address }     // Allow username lookup
                 ]
             },
             include: {
@@ -36,15 +37,6 @@ export const userRouter = new Elysia({ prefix: '/user' })
         const positions = user.positions || [];
         const activePositions = positions.filter(p => p.status === 'OPEN');
         
-        // Calculate Total Yield (Premium Received)
-        // Note: amount and strikePrice are Decimals, needs conversion
-        // In this MVP, we might need to store premium in DB or calc it. 
-        // The Position model currently has 'amount' (collateral).
-        // Let's assume premium is roughly 2% of collateral for estimation if not stored, 
-        // but better to fetch from contract if possible.
-        // Wait, the Position model I added doesn't have 'premium'. 
-        // Let's check schema again. 'amount' is collateral.
-        
         let totalYield = 0;
         let totalLocked = 0;
 
@@ -61,7 +53,10 @@ export const userRouter = new Elysia({ prefix: '/user' })
             success: true,
             data: {
                 user: {
+                    id: user.id,
                     name: user.name,
+                    username: user.username,
+                    email: user.email,
                     phoneNumber: user.phoneNumber,
                     walletAddress: user.walletAddress
                 },
@@ -90,5 +85,72 @@ export const userRouter = new Elysia({ prefix: '/user' })
     }, {
         params: t.Object({
             address: t.String()
+        })
+    })
+
+    /**
+     * Update User Profile
+     * PUT /api/user/profile
+     */
+    .put('/profile', async ({ body }) => {
+        const { phoneNumber, name, username, email, walletAddress } = body;
+
+        try {
+            // Check if username/email already exists (excluding current user)
+            // Note: Since we identify by phone, we check others
+            if (username) {
+                const existingUser = await prisma.user.findFirst({
+                    where: {
+                        username,
+                        NOT: { phoneNumber }
+                    }
+                });
+                if (existingUser) {
+                    return { success: false, error: 'Username already taken' };
+                }
+            }
+
+            if (email) {
+                const existingUser = await prisma.user.findFirst({
+                    where: {
+                        email,
+                        NOT: { phoneNumber }
+                    }
+                });
+                if (existingUser) {
+                    return { success: false, error: 'Email already taken' };
+                }
+            }
+
+            const updatedUser = await prisma.user.update({
+                where: { 
+                    countryCode_phoneNumber: {
+                        countryCode: '+62', // Defaulting for now, ideally pass it
+                        phoneNumber: phoneNumber
+                    }
+                },
+                data: {
+                    name,
+                    username,
+                    email,
+                    walletAddress
+                }
+            });
+
+            return {
+                success: true,
+                data: updatedUser
+            };
+        } catch (error) {
+            console.error('Update profile error:', error);
+            return { success: false, error: 'Failed to update profile' };
+        }
+    }, {
+        body: t.Object({
+            phoneNumber: t.String(),
+            name: t.Optional(t.String()),
+            username: t.Optional(t.String()),
+            email: t.Optional(t.String()),
+            walletAddress: t.Optional(t.String())
         })
     });

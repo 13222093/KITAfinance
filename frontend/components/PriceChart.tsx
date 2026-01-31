@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, AreaSeriesOptions } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, AreaSeries, AreaSeriesOptions, Time } from 'lightweight-charts';
 
 interface PriceChartProps {
     symbol: string;
@@ -20,14 +20,14 @@ interface OhlcvData {
 }
 
 interface ChartDataPoint {
-    time: number;
+    time: Time;
     value: number;
 }
 
 export function PriceChart({ symbol, targetPrice }: PriceChartProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const chartRef = useRef<IChartApi | null>(null);
-    const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+    const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
 
     const [currentPrice, setCurrentPrice] = useState<number | null>(null);
     const [priceChange, setPriceChange] = useState<number>(0);
@@ -78,7 +78,7 @@ export function PriceChart({ symbol, targetPrice }: PriceChartProps) {
                 if (data && data.length > 0) {
                     // Convert to chart data format
                     const formattedData: ChartDataPoint[] = data.map((candle) => ({
-                        time: Math.floor(new Date(candle.time_period_start).getTime() / 1000),
+                        time: Math.floor(new Date(candle.time_period_start).getTime() / 1000) as Time,
                         value: candle.price_close * USD_TO_IDR,
                     }));
 
@@ -136,7 +136,7 @@ export function PriceChart({ symbol, targetPrice }: PriceChartProps) {
         chartRef.current = chart;
 
         // Add area series
-        const areaSeries = chart.addAreaSeries({
+        const areaSeries = chart.addSeries(AreaSeries, {
             lineColor: '#0A98FF',
             topColor: 'rgba(10, 152, 255, 0.4)',
             bottomColor: 'rgba(10, 152, 255, 0.0)',

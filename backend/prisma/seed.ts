@@ -16,6 +16,8 @@ async function main() {
   // Configurable Admin Details
   const adminUser = {
     name: 'Super Admin',
+    username: 'superadmin',
+    email: 'admin@kita.finance',
     countryCode: '+62',
     phoneNumber: '81234567890',
     walletAddress: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'

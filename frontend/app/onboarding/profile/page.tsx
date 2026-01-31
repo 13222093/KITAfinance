@@ -27,14 +27,26 @@ export default function CompleteProfile() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Check if already logged in
+    // Check if already logged in with session
     const sessionStr = localStorage.getItem('userSession');
-    const guestDataStr = localStorage.getItem('userData');
-    if (sessionStr || guestDataStr) {
-      router.push('/dashboard');
-      return;
+    if (sessionStr) {
+      const session = JSON.parse(sessionStr);
+      // If user already has a name, they don't need to be here
+      if (session.name) {
+        router.push('/dashboard');
+        return;
+      }
+      // If name is missing, allow them to stay to complete profile
+    } else {
+      // Check for guest data
+      const guestDataStr = localStorage.getItem('userData');
+      if (guestDataStr) {
+        router.push('/dashboard');
+        return;
+      }
     }
 
     const phone = localStorage.getItem("phoneNumber");
@@ -74,27 +86,73 @@ export default function CompleteProfile() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    const userData = {
-      ...formData,
-      phoneNumber,
-      createdAt: new Date().toISOString(),
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
+    setIsSubmitting(true);
 
-    router.push("/onboarding/profiling");
+    try {
+      // 1. Update Backend
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/user/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          name: formData.fullName,
+          username: formData.username,
+          email: formData.email
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        setErrors({ ...errors, apiError: result.error || 'Gagal menyimpan profil' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Update Session (Important for redirection logic)
+      const sessionStr = localStorage.getItem('userSession');
+      if (sessionStr) {
+        const session = JSON.parse(sessionStr);
+        const updatedSession = {
+          ...session,
+          name: formData.fullName,
+          username: formData.username,
+          email: formData.email
+        };
+        localStorage.setItem('userSession', JSON.stringify(updatedSession));
+      }
+
+      // 3. Keep localStorage logic for consistency (Guest/Hybrid)
+      const userData = {
+        ...formData,
+        phoneNumber,
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      router.push("/onboarding/profiling");
+
+    } catch (err) {
+      console.error(err);
+      setErrors({ ...errors, apiError: 'Terjadi kesalahan jaringan' });
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData({ ...formData, [field]: value });
     if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      delete newErrors.apiError;
+      setErrors(newErrors);
     }
   };
 
@@ -190,6 +248,12 @@ export default function CompleteProfile() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              {errors.apiError && (
+                <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-600 font-medium rounded-xl">
+                  <AlertDescription>{errors.apiError}</AlertDescription>
+                </Alert>
+              )}
+
               {/* Full Name */}
               <div className="space-y-2">
                 <Label htmlFor="fullName">Nama Lengkap</Label>
@@ -202,6 +266,7 @@ export default function CompleteProfile() {
                     value={formData.fullName}
                     onChange={(e) => handleChange("fullName", e.target.value)}
                     required
+                    disabled={isSubmitting}
                     className="pl-12"
                   />
                 </div>
@@ -222,6 +287,7 @@ export default function CompleteProfile() {
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
                     required
+                    disabled={isSubmitting}
                     className="pl-12"
                   />
                 </div>
@@ -242,6 +308,7 @@ export default function CompleteProfile() {
                     value={formData.username}
                     onChange={(e) => handleChange("username", e.target.value.toLowerCase())}
                     required
+                    disabled={isSubmitting}
                     className="pl-12"
                   />
                 </div>
@@ -277,7 +344,8 @@ export default function CompleteProfile() {
                   id="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onChange={(e) => handleChange("agreeToTerms", e.target.checked)}
-                  className="mt-1 w-5 h-5 text-primary-600 border-2 border-primary-200 rounded focus:ring-primary-500 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="mt-1 w-5 h-5 text-primary-600 border-2 border-primary-200 rounded focus:ring-primary-500 cursor-pointer disabled:opacity-50"
                 />
                 <label htmlFor="agreeToTerms" className="text-sm text-stone-700 cursor-pointer">
                   Saya setuju dengan{" "}
@@ -295,11 +363,24 @@ export default function CompleteProfile() {
               )}
 
               {/* Submit Button */}
-              <Button type="submit" variant="primary" size="lg" fullWidth>
-                <div className="flex items-center gap-2">
-                  <span>Lengkapi Pendaftaran</span>
-                  <ArrowRight className="h-5 w-5" />
-                </div>
+              <Button 
+                type="submit" 
+                variant="primary" 
+                size="lg" 
+                fullWidth
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Menyimpan...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>Lengkapi Pendaftaran</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                )}
               </Button>
             </form>
           </div>

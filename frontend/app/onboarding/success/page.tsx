@@ -8,18 +8,26 @@ export default function OnboardingSuccess() {
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    // Check if already logged in with session
+    // Check if logged in (session or guest)
     const sessionStr = localStorage.getItem('userSession');
-    if (sessionStr) {
-      router.push('/dashboard');
+    const guestDataStr = localStorage.getItem('userData');
+
+    if (!sessionStr && !guestDataStr) {
+      router.push('/onboarding');
       return;
     }
 
-    const data = localStorage.getItem('userData');
-    if (data) {
-      setUserData(JSON.parse(data));
-    } else {
-      router.push('/onboarding');
+    if (guestDataStr) {
+      setUserData(JSON.parse(guestDataStr));
+    } else if (sessionStr) {
+        // Fallback for session-only users if they reach this page
+        // (Usually they would have filled guestDataStr in prev steps, but just in case)
+        const session = JSON.parse(sessionStr);
+        setUserData({
+            fullName: session.name || 'User',
+            username: 'user',
+            email: 'user@kita.finance'
+        });
     }
   }, [router]);
 

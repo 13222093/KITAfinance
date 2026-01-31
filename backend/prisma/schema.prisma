@@ -11,6 +11,8 @@ model User {
   countryCode   String        @default("+62") @map("country_code")
   phoneNumber   String        @map("phone_number") @db.VarChar(20)
   walletAddress String?       @unique @map("wallet_address") @db.VarChar(42)
+  username      String?       @unique @db.VarChar(50)
+  email         String?       @unique @db.VarChar(255)
   name          String?       @db.VarChar(100)
   createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)

@@ -88,7 +88,9 @@ export const authRouter = new Elysia({ prefix: '/auth' })
                 countryCode: user.countryCode,
                 phoneNumber: user.phoneNumber,
                 walletAddress: user.walletAddress,
-                name: user.name
+                name: user.name,
+                username: user.username,
+                email: user.email
             }
         };
     }, {
