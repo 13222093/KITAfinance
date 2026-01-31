@@ -45,7 +45,7 @@ export function MobileNav() {
     };
 
     return (
-        <div className="fixed bottom-6 left-4 right-4 z-50 md:hidden animate-in slide-in-from-bottom-5 duration-500">
+        <div className="fixed bottom-3 left-4 right-4 z-40 md:hidden animate-in slide-in-from-bottom-5 duration-500">
             <div className="bg-white/10 backdrop-blur-xl border-2 border-white/20 rounded-3xl p-3 shadow-2xl flex justify-around items-center">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);

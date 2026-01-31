@@ -9,7 +9,50 @@ import Link from 'next/link';
 export default function NabungBareng() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [createGroupStep, setCreateGroupStep] = useState(1); // 1 = form, 2 = invite members
+  const [createGroupStep, setCreateGroupStep] = useState(1); // 1 = dream, 2 = math, 3 = commitment
+
+  // New wizard states
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
+  const [groupName, setGroupName] = useState('');
+  const [groupDescription, setGroupDescription] = useState('');
+  const [targetAmount, setTargetAmount] = useState<number>(50000000);
+  const [maxMembers, setMaxMembers] = useState<number>(10);
+  const [selectedStrategy, setSelectedStrategy] = useState<'csp' | 'cc'>('csp');
+
+  // Goal options with emoji and colors
+  const goalOptions = [
+    { id: 'wedding', emoji: '💍', label: 'Nikahan', color: 'from-pink-400 to-rose-500', hint: 'Biaya nikah rata-rata Rp 50-100 juta' },
+    { id: 'house', emoji: '🏠', label: 'Beli Rumah', color: 'from-emerald-400 to-green-500', hint: 'DP rumah biasanya 20-30% harga' },
+    { id: 'car', emoji: '🚗', label: 'Beli Kendaraan', color: 'from-blue-400 to-indigo-500', hint: 'Mobil baru mulai Rp 150-300 juta' },
+    { id: 'education', emoji: '🎓', label: 'Pendidikan', color: 'from-purple-400 to-violet-500', hint: 'Kuliah S1 sekitar Rp 50-200 juta' },
+    { id: 'vacation', emoji: '🏖️', label: 'Liburan Bareng', color: 'from-cyan-400 to-teal-500', hint: 'Trip ke Jepang ~Rp 20-30 juta/orang' },
+    { id: 'emergency', emoji: '🛡️', label: 'Dana Darurat', color: 'from-amber-400 to-orange-500', hint: 'Idealnya 6x pengeluaran bulanan' },
+  ];
+
+  // Target presets
+  const targetPresets = [
+    { label: 'Rp 10 Juta', value: 10000000 },
+    { label: 'Rp 50 Juta', value: 50000000 },
+    { label: 'Rp 100 Juta', value: 100000000 },
+    { label: 'Rp 500 Juta', value: 500000000 },
+  ];
+
+  // Calculate per person
+  const perPersonAmount = maxMembers > 0 ? Math.ceil(targetAmount / maxMembers) : 0;
+
+  // Reset wizard when closing
+  const closeWizard = () => {
+    setShowCreateModal(false);
+    setCreateGroupStep(1);
+    setSelectedGoal(null);
+    setGroupName('');
+    setGroupDescription('');
+    setTargetAmount(50000000);
+    setMaxMembers(10);
+    setSelectedStrategy('csp');
+    setSelectedFriends([]);
+  };
+
 
   // Data dummy untuk groups
   const myGroups = [
@@ -406,189 +449,387 @@ export default function NabungBareng() {
         </div>
       </section>
 
-      {/* Create Group Modal - Enhanced Design */}
+      {/* Create Group Modal - 3-Step Gamified Wizard */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-[#0A4A7C]/90 backdrop-blur-md flex items-end md:items-center justify-center z-50">
-          <div className="bg-white w-full h-[95vh] md:h-auto md:max-h-[90vh] md:rounded-3xl md:max-w-2xl overflow-y-auto shadow-2xl">
-            {/* Modal Header - Gradient Design */}
-            <div className="sticky top-0 bg-gradient-to-r from-[#FFBC57] via-[#FF9500] to-[#F97316] text-white p-6 md:p-8 flex items-center justify-between z-10 shadow-lg">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-black drop-shadow-lg mb-1">
-                  {createGroupStep === 1 ? 'Buat Grup Baru' : 'Ajak Teman'}
-                </h2>
-                <p className="text-sm md:text-base text-white/90 font-semibold">
-                  {createGroupStep === 1
-                    ? 'Isi detail grup nabung bareng kamu'
-                    : 'Pilih teman atau bagikan link untuk join grup'}
+          <div className="bg-white w-full h-[95vh] md:h-auto md:max-h-[90vh] md:rounded-3xl md:max-w-2xl overflow-hidden shadow-2xl flex flex-col">
+            {/* Modal Header - Dynamic based on step */}
+            <div className={`sticky top-0 text-white p-5 md:p-6 flex items-center justify-between z-10 shadow-lg ${createGroupStep === 1 ? 'bg-gradient-to-r from-[#C15BFF] via-[#0A98FF] to-[#04877f]' :
+                createGroupStep === 2 ? 'bg-gradient-to-r from-[#FFBC57] via-[#FF9500] to-[#F97316]' :
+                  'bg-gradient-to-r from-[#10B981] via-[#059669] to-[#047857]'
+              }`}>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-2xl">
+                    {createGroupStep === 1 ? '💭' : createGroupStep === 2 ? '🧮' : '🚀'}
+                  </span>
+                  <h2 className="text-xl md:text-2xl font-black drop-shadow-lg">
+                    {createGroupStep === 1 ? 'Mimpi Apa Nih?' :
+                      createGroupStep === 2 ? 'Hitung-hitungan' :
+                        'Siap Berangkat!'}
+                  </h2>
+                </div>
+                <p className="text-xs md:text-sm text-white/90 font-medium">
+                  {createGroupStep === 1 ? 'Pilih tujuan dan kasih nama grup keren kamu' :
+                    createGroupStep === 2 ? 'Target berapa? Berapa orang? Strategi apa?' :
+                      'Review dan undang teman-teman!'}
                 </p>
               </div>
               <button
-                onClick={() => {
-                  setShowCreateModal(false);
-                  setCreateGroupStep(1);
-                  setSelectedFriends([]);
-                }}
-                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all hover:scale-110 flex-shrink-0 ml-4"
+                onClick={closeWizard}
+                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all hover:scale-110 flex-shrink-0 ml-3"
               >
-                <X className="w-6 h-6 text-white" />
+                <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
-            {/* Modal Content - Enhanced Form */}
-            <div className="p-4 md:p-8 bg-gray-50 space-y-6">
-              {createGroupStep === 1 ? (
-                // Step 1: Form Buat Grup
-                <>
+            {/* Progress Bar */}
+            <div className="bg-gray-100 px-4 py-3 border-b">
+              <div className="flex items-center justify-between mb-2">
+                {[1, 2, 3].map((step) => (
+                  <div key={step} className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${step < createGroupStep ? 'bg-green-500 text-white' :
+                        step === createGroupStep ? 'bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white' :
+                          'bg-gray-200 text-gray-500'
+                      }`}>
+                      {step < createGroupStep ? '✓' : step}
+                    </div>
+                    <span className={`hidden sm:block text-xs font-bold ${step <= createGroupStep ? 'text-[#0A4A7C]' : 'text-gray-400'
+                      }`}>
+                      {step === 1 ? 'Mimpi' : step === 2 ? 'Target' : 'Mulai'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] transition-all duration-500"
+                  style={{ width: `${(createGroupStep / 3) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Modal Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
+
+              {/* STEP 1: THE DREAM */}
+              {createGroupStep === 1 && (
+                <div className="space-y-6">
+                  {/* Goal Selector */}
+                  <div>
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-3">
+                      🎯 Mau nabung buat apa?
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {goalOptions.map((goal) => (
+                        <button
+                          key={goal.id}
+                          onClick={() => setSelectedGoal(goal.id)}
+                          className={`p-4 rounded-2xl border-3 transition-all text-center ${selectedGoal === goal.id
+                              ? `bg-gradient-to-br ${goal.color} text-white border-transparent shadow-lg scale-105`
+                              : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+                            }`}
+                        >
+                          <div className="text-3xl mb-2">{goal.emoji}</div>
+                          <div className={`text-sm font-bold ${selectedGoal === goal.id ? 'text-white' : 'text-gray-700'}`}>
+                            {goal.label}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    {/* Smart Hint */}
+                    {selectedGoal && (
+                      <div className="mt-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-xl flex items-start gap-2">
+                        <span className="text-lg">🤖</span>
+                        <p className="text-sm text-blue-700">
+                          <span className="font-bold">AI Tips:</span>{' '}
+                          {goalOptions.find(g => g.id === selectedGoal)?.hint}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Group Name */}
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Nama Grup</label>
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-2">
+                      ✏️ Nama Grup
+                    </label>
                     <input
                       type="text"
-                      placeholder="Contoh: Tim Startup Gaji Pas"
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
+                      value={groupName}
+                      onChange={(e) => setGroupName(e.target.value)}
+                      placeholder={
+                        selectedGoal === 'wedding' ? 'Contoh: Nikahan Budi & Siti 2025' :
+                          selectedGoal === 'house' ? 'Contoh: Tim DP Rumah Cibubur' :
+                            selectedGoal === 'vacation' ? 'Contoh: Trip Jepang Squad' :
+                              'Contoh: Tim Nabung Gaji Pas'
+                      }
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0A98FF] focus:border-transparent font-medium"
                     />
                   </div>
 
+                  {/* Group Description */}
+                  <div>
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-2">
+                      📝 Deskripsi / Slogan (Opsional)
+                    </label>
+                    <textarea
+                      value={groupDescription}
+                      onChange={(e) => setGroupDescription(e.target.value)}
+                      placeholder="Contoh: Nabung bareng sampai bisa nikah mewah! Semangat guys! 💪"
+                      rows={2}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0A98FF] focus:border-transparent font-medium resize-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 2: THE MATH */}
+              {createGroupStep === 2 && (
+                <div className="space-y-6">
                   {/* Target Amount */}
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Target Dana</label>
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-3">
+                      💰 Target Dana Terkumpul
+                    </label>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {targetPresets.map((preset) => (
+                        <button
+                          key={preset.value}
+                          onClick={() => setTargetAmount(preset.value)}
+                          className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${targetAmount === preset.value
+                              ? 'bg-gradient-to-r from-[#0A98FF] to-[#00FFF0] text-white shadow-lg'
+                              : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-[#0A98FF]'
+                            }`}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">Rp</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">Rp</span>
                       <input
                         type="number"
-                        placeholder="50.000.000"
-                        className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
+                        value={targetAmount}
+                        onChange={(e) => setTargetAmount(Number(e.target.value))}
+                        className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#0A98FF]"
                       />
                     </div>
                   </div>
 
                   {/* Max Members */}
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Maksimal Anggota</label>
-                    <input
-                      type="number"
-                      placeholder="10"
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
-                    />
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-3">
+                      👥 Jumlah Anggota
+                    </label>
+                    <div className="flex gap-3">
+                      {[5, 10, 20, 50].map((num) => (
+                        <button
+                          key={num}
+                          onClick={() => setMaxMembers(num)}
+                          className={`flex-1 py-3 rounded-xl font-bold transition-all ${maxMembers === num
+                              ? 'bg-gradient-to-r from-[#C15BFF] to-[#0A98FF] text-white shadow-lg'
+                              : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-[#C15BFF]'
+                            }`}
+                        >
+                          {num} orang
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Action Buttons Step 1 */}
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      onClick={() => {
-                        setShowCreateModal(false);
-                        setCreateGroupStep(1);
-                      }}
-                      className="flex-1 py-3 md:py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-bold"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={() => setCreateGroupStep(2)}
-                      className="flex-1 py-3 md:py-4 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all"
-                    >
-                      Lanjut →
-                    </button>
+                  {/* Per Person Calculator */}
+                  <div className="bg-gradient-to-br from-[#0A98FF]/10 to-[#C15BFF]/10 border-2 border-[#0A98FF]/30 rounded-2xl p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-[#0A98FF] to-[#C15BFF] rounded-xl flex items-center justify-center">
+                        <Coins className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">Patungan per orang:</p>
+                        <p className="text-xl font-black text-[#0A4A7C]">
+                          Rp {perPersonAmount.toLocaleString('id-ID')}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {maxMembers} orang × Rp {perPersonAmount.toLocaleString('id-ID')} = Rp {targetAmount.toLocaleString('id-ID')}
+                    </p>
                   </div>
-                </>
-              ) : (
-                // Step 2: Invite Members
-                <>
-                  {/* Invite Link Section */}
-                  <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
-                    <h3 className="text-xl font-black text-[#0A4A7C] mb-3">Link Undangan Grup</h3>
-                    <p className="text-sm text-gray-600 mb-4">Bagikan link ini untuk mengundang teman</p>
-                    <div className="flex items-center gap-2 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl mb-4">
+
+                  {/* Strategy Selection */}
+                  <div>
+                    <label className="block text-sm font-black text-[#0A4A7C] mb-3">
+                      📊 Pilih Strategi
+                    </label>
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => setSelectedStrategy('csp')}
+                        className={`w-full p-4 rounded-xl text-left transition-all ${selectedStrategy === 'csp'
+                            ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white shadow-lg'
+                            : 'bg-white border-2 border-gray-200 hover:border-green-400'
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedStrategy === 'csp' ? 'bg-white/20' : 'bg-green-100'
+                            }`}>
+                            <Shield className={`w-5 h-5 ${selectedStrategy === 'csp' ? 'text-white' : 'text-green-600'}`} />
+                          </div>
+                          <div>
+                            <p className={`font-bold ${selectedStrategy === 'csp' ? 'text-white' : 'text-gray-800'}`}>
+                              Beli Murah Dapat Cashback
+                            </p>
+                            <p className={`text-xs ${selectedStrategy === 'csp' ? 'text-white/80' : 'text-gray-500'}`}>
+                              Premium ~8-12% APY • Risiko rendah
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setSelectedStrategy('cc')}
+                        className={`w-full p-4 rounded-xl text-left transition-all ${selectedStrategy === 'cc'
+                            ? 'bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] text-white shadow-lg'
+                            : 'bg-white border-2 border-gray-200 hover:border-purple-400'
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedStrategy === 'cc' ? 'bg-white/20' : 'bg-purple-100'
+                            }`}>
+                            <TrendingUp className={`w-5 h-5 ${selectedStrategy === 'cc' ? 'text-white' : 'text-purple-600'}`} />
+                          </div>
+                          <div>
+                            <p className={`font-bold ${selectedStrategy === 'cc' ? 'text-white' : 'text-gray-800'}`}>
+                              Hold Aset Dapat Bonus
+                            </p>
+                            <p className={`text-xs ${selectedStrategy === 'cc' ? 'text-white/80' : 'text-gray-500'}`}>
+                              Premium ~6-10% APY • Untuk HODLers
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: THE COMMITMENT */}
+              {createGroupStep === 3 && (
+                <div className="space-y-6">
+                  {/* Summary Card */}
+                  <div className="bg-gradient-to-br from-[#0A4A7C] to-[#0A98FF] rounded-2xl p-5 text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="text-4xl">
+                        {goalOptions.find(g => g.id === selectedGoal)?.emoji || '🎯'}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black">{groupName || 'Grup Nabung Bareng'}</h3>
+                        <p className="text-sm text-white/80">{groupDescription || 'Yuk nabung bareng!'}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div className="bg-white/10 rounded-xl p-3">
+                        <p className="text-xs text-white/70">Target</p>
+                        <p className="font-black text-sm">Rp {(targetAmount / 1000000).toFixed(0)}jt</p>
+                      </div>
+                      <div className="bg-white/10 rounded-xl p-3">
+                        <p className="text-xs text-white/70">Anggota</p>
+                        <p className="font-black text-sm">{maxMembers} orang</p>
+                      </div>
+                      <div className="bg-white/10 rounded-xl p-3">
+                        <p className="text-xs text-white/70">Per Orang</p>
+                        <p className="font-black text-sm">Rp {(perPersonAmount / 1000000).toFixed(1)}jt</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Share Link */}
+                  <div className="bg-white border-2 border-gray-200 rounded-2xl p-4">
+                    <h4 className="font-black text-[#0A4A7C] mb-3">🔗 Link Undangan Grup</h4>
+                    <div className="flex items-center gap-2 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl mb-3">
                       <input
                         type="text"
                         value="https://kita.app/join/abc123xyz"
                         readOnly
-                        className="flex-1 bg-transparent text-gray-700 text-sm font-semibold focus:outline-none"
+                        className="flex-1 bg-transparent text-gray-700 text-sm font-medium focus:outline-none"
                       />
                       <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                        <Copy className="w-5 h-5 text-gray-600" />
+                        <Copy className="w-4 h-4 text-gray-600" />
                       </button>
                     </div>
-                    <button className="w-full flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-bold">
-                      <MessageCircle className="w-5 h-5" />
-                      <span>Share via Telegram</span>
-                    </button>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 h-px bg-gray-300"></div>
-                    <span className="text-sm text-gray-500 font-semibold">atau</span>
-                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button className="flex items-center justify-center gap-2 p-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-sm transition-all">
+                        <MessageCircle className="w-4 h-4" />
+                        WhatsApp
+                      </button>
+                      <button className="flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-sm transition-all">
+                        <Share2 className="w-4 h-4" />
+                        Telegram
+                      </button>
+                    </div>
                   </div>
 
                   {/* Invite KITA Users */}
-                  <div>
-                    <h3 className="text-xl font-black text-[#0A4A7C] mb-4">Cari & Undang Pengguna KITA</h3>
-                    <p className="text-sm text-gray-600 mb-4">Undang teman yang sudah punya akun KITA</p>
-
-                    {/* Search Bar */}
-                    <div className="mb-4">
-                      <input
-                        type="text"
-                        placeholder="Cari berdasarkan username..."
-                        className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
-                      />
-                    </div>
-
-                    {/* Suggested Users */}
-                    <div className="space-y-3">
+                  <div className="bg-white border-2 border-gray-200 rounded-2xl p-4">
+                    <h4 className="font-black text-[#0A4A7C] mb-3">👥 Undang Pengguna KITA</h4>
+                    <div className="space-y-2">
                       {suggestedFriends.map((friend) => (
                         <label
                           key={friend.id}
-                          className="flex items-center gap-4 p-4 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:border-gray-300 hover:shadow-md transition-all"
+                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${selectedFriends.includes(friend.id)
+                              ? 'bg-[#0A98FF]/10 border-2 border-[#0A98FF]'
+                              : 'bg-gray-50 border-2 border-gray-100 hover:border-gray-200'
+                            }`}
                         >
                           <input
                             type="checkbox"
                             checked={selectedFriends.includes(friend.id)}
                             onChange={() => toggleFriendSelection(friend.id)}
-                            className="w-5 h-5 text-[#FF9500] rounded focus:ring-2 focus:ring-[#FF9500]"
+                            className="w-5 h-5 text-[#0A98FF] rounded focus:ring-2 focus:ring-[#0A98FF]"
                           />
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#FFBC57] to-[#FF9500] rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                          <div className="w-10 h-10 bg-gradient-to-br from-[#C15BFF] to-[#0A98FF] rounded-xl flex items-center justify-center text-white font-bold text-sm">
                             {friend.avatar}
                           </div>
-                          <div className="flex-1">
-                            <p className="text-gray-900 font-bold">{friend.name}</p>
-                            <p className="text-sm text-gray-600">{friend.username}</p>
+                          <div>
+                            <p className="text-gray-800 font-bold text-sm">{friend.name}</p>
+                            <p className="text-xs text-gray-500">@{friend.username}</p>
                           </div>
                         </label>
                       ))}
                     </div>
-                    {selectedFriends.length > 0 && (
-                      <div className="mt-4 p-4 bg-orange-100 border-2 border-orange-200 rounded-xl">
-                        <p className="text-sm text-orange-700 font-bold">
-                          {selectedFriends.length} teman dipilih
-                        </p>
-                      </div>
-                    )}
                   </div>
-
-                  {/* Action Buttons Step 2 */}
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      onClick={() => setCreateGroupStep(1)}
-                      className="flex-1 py-3 md:py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-bold"
-                    >
-                      Kembali
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowCreateModal(false);
-                        setCreateGroupStep(1);
-                        setSelectedFriends([]);
-                      }}
-                      className="flex-1 py-3 md:py-4 bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white rounded-xl font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all"
-                    >
-                      {selectedFriends.length > 0 ? 'Kirim Undangan' : 'Selesai'}
-                    </button>
-                  </div>
-                </>
+                </div>
               )}
+            </div>
+
+            {/* Footer Actions */}
+            <div className="sticky bottom-0 p-4 bg-white border-t shadow-lg flex gap-3">
+              {createGroupStep > 1 && (
+                <button
+                  onClick={() => setCreateGroupStep(createGroupStep - 1)}
+                  className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-bold"
+                >
+                  ← Kembali
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (createGroupStep < 3) {
+                    setCreateGroupStep(createGroupStep + 1);
+                  } else {
+                    // Final: Create group
+                    closeWizard();
+                    // TODO: API call to create group
+                  }
+                }}
+                disabled={createGroupStep === 1 && (!selectedGoal || !groupName)}
+                className={`flex-1 py-3 rounded-xl font-black transition-all ${createGroupStep === 1 && (!selectedGoal || !groupName)
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : createGroupStep === 3
+                      ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white shadow-[0_4px_0_0_rgba(5,150,105,1)] hover:shadow-[0_2px_0_0_rgba(5,150,105,1)] hover:translate-y-0.5'
+                      : 'bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white shadow-[0_4px_0_0_rgba(10,74,124,1)] hover:shadow-[0_2px_0_0_rgba(10,74,124,1)] hover:translate-y-0.5'
+                  }`}
+              >
+                {createGroupStep === 3 ? '🎉 Buat Grup & Undang!' : 'Lanjut →'}
+              </button>
             </div>
           </div>
         </div>
