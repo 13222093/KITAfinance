@@ -73,12 +73,7 @@ export default function Vaults() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 space-y-6 md:space-y-8">
           {/* Header with Back Button */}
           <div className="flex items-center gap-3 md:gap-4">
-            <Link
-              href="/dashboard"
-              className="group w-12 h-12 md:w-14 md:h-14 bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-2xl flex items-center justify-center shadow-xl hover:bg-white/20 hover:scale-105 hover:-translate-y-1 transition-all"
-            >
-              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:-translate-x-1 transition-transform" />
-            </Link>
+
             <div className="flex-1">
               <div className="inline-block bg-gradient-to-r from-[#FBFF2B] to-[#FFBC57] text-white px-3 py-1 rounded-full text-xs font-bold mb-2 shadow-lg">
                 💼 PORTFOLIO

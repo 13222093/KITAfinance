@@ -68,19 +68,8 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Right Section (XP + CTA) */}
+          {/* Desktop Right Section (CTA only) */}
           <div className="flex items-center gap-4">
-            {/* XP Bar (only show when logged in) */}
-            {isLoggedIn && (
-              <div className="hidden lg:block">
-                <XPBar
-                  currentXP={userXP.currentXP}
-                  levelXP={userXP.levelXP}
-                  level={userXP.level}
-                  variant="compact"
-                />
-              </div>
-            )}
 
             {/* Guest Mode Button (Dev Only) */}
             {!isLoggedIn && (

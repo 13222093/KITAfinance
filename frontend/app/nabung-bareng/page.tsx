@@ -112,7 +112,7 @@ export default function NabungBareng() {
         </div>
 
         {/* Trophy - Bottom Left (Rotating slowly) */}
-        <div className="absolute bottom-32 left-8 md:left-20 animate-spin-slow">
+        <div className="absolute bottom-32 left-1 md:left-20 animate-spin-slow">
           <div className="w-16 h-16 bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] rounded-full flex items-center justify-center shadow-2xl backdrop-blur-sm border-2 border-white/40">
             <Trophy className="w-8 h-8 text-white drop-shadow-lg" />
           </div>
@@ -126,7 +126,7 @@ export default function NabungBareng() {
         </div>
 
         {/* Sparkles - Bottom Right */}
-        <div className="absolute bottom-40 right-12 md:right-32 animate-pulse" style={{ animationDelay: '1s' }}>
+        <div className="absolute bottom-40 right-6 md:right-32 animate-pulse" style={{ animationDelay: '1s' }}>
           <div className="w-10 h-10 bg-gradient-to-br from-[#FFBC57] to-[#FF9500] rounded-lg flex items-center justify-center shadow-xl backdrop-blur-sm border-2 border-white/30">
             <Sparkles className="w-5 h-5 text-white drop-shadow-lg" />
           </div>
@@ -217,7 +217,7 @@ export default function NabungBareng() {
                 <Link
                   key={group.id}
                   href={`/nabung-bareng/${group.id}`}
-                  className="group block w-[85vw] md:w-[500px] flex-shrink-0 snap-center bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border-4 border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                  className="group block w-[80vw] md:w-[500px] flex-shrink-0 snap-center bg-white/95 backdrop-blur-sm rounded-3xl p-4 md:p-6 shadow-2xl border-4 border-white/50 hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                   style={{
                     boxShadow: `0 20px 60px ${cardStyle.shadow}`
                   }}
@@ -226,25 +226,26 @@ export default function NabungBareng() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-2xl font-black text-[#0A4A7C] group-hover:text-[#0A98FF] transition-colors">{group.name}</h3>
+                        <h3 className="text-xl md:text-2xl font-black text-[#0A4A7C] group-hover:text-[#0A98FF] transition-colors">{group.name}</h3>
+                        {/* Badge - Desktop only */}
                         <span
-                          className={`px-3 py-1 bg-gradient-to-r ${cardStyle.badge} text-white text-xs font-bold rounded-full shadow-md`}
+                          className={`hidden md:inline-block px-3 py-1 bg-gradient-to-r ${cardStyle.badge} text-white text-xs font-bold rounded-full shadow-md`}
                         >
                           {group.role}
                         </span>
                       </div>
 
                       {/* Stats Row */}
-                      <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
-                        <span className="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
+                      <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-600 flex-wrap">
+                        <span className="flex items-center gap-1 md:gap-1.5 bg-gray-100 px-2 md:px-3 py-1 rounded-full">
                           <Users className="w-4 h-4 text-[#0A98FF]" />
                           <span className="font-semibold">{group.members} Members</span>
                         </span>
-                        <span className="flex items-center gap-1.5 bg-green-50 px-3 py-1 rounded-full">
+                        <span className="flex items-center gap-1 md:gap-1.5 bg-green-50 px-2 md:px-3 py-1 rounded-full">
                           <TrendingUp className="w-4 h-4 text-green-500" />
                           <span className="font-semibold text-green-600">APY {group.apy}%</span>
                         </span>
-                        <span className="flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full">
+                        <span className="flex items-center gap-1 md:gap-1.5 bg-amber-50 px-2 md:px-3 py-1 rounded-full">
                           <Clock className="w-4 h-4 text-amber-500" />
                           <span className="font-semibold text-amber-600">{group.nextContribution}</span>
                         </span>
@@ -252,13 +253,19 @@ export default function NabungBareng() {
                     </div>
 
                     {/* Progress Badge */}
-                    <div className="text-right">
+                    <div className="flex flex-col items-end gap-2">
                       <div
-                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${cardStyle.badge} flex flex-col items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform`}
+                        className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${cardStyle.badge} flex flex-col items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform`}
                       >
-                        <span className="text-2xl font-black text-white">{Math.round(progress)}%</span>
+                        <span className="text-xl md:text-2xl font-black text-white">{Math.round(progress)}%</span>
                         <span className="text-xs text-white/80 font-semibold">Progress</span>
                       </div>
+                      {/* Badge - Mobile only (below progress) */}
+                      <span
+                        className={`md:hidden px-3 py-1 bg-gradient-to-r ${cardStyle.badge} text-white text-xs font-bold rounded-full shadow-md`}
+                      >
+                        {group.role}
+                      </span>
                     </div>
                   </div>
 
