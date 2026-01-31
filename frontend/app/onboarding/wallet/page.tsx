@@ -96,15 +96,12 @@ export default function WalletOnboarding() {
 
                 {/* Logo */}
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-hard-md">
-                            <TrendingUp className="h-7 w-7 text-white" />
-                        </div>
+                    <div className="lg:hidden flex items-center justify-center mb-6">
                         <div>
-                            <h1 className="text-2xl font-extrabold text-white">KITA</h1>
-                            <div className="flex items-center gap-1">
-                                <Sparkles className="h-4 w-4 text-white" />
-                                <span className="text-sm font-bold text-white">DeFi Options</span>
+                            <h1 className="text-2xl font-extrabold text-white">KITA<span className="font-serif italic font-light tracking-wide text-[#f59e1b] bg-clip-border">finance</span></h1>
+                            <div className="flex items-center gap-1 w-fit">
+                                <Sparkles className="h-3.5 w-3.5 text-white" />
+                                <span className="text-xs font-bold text-white">Powered by Thetanuts V4</span>
                             </div>
                         </div>
                     </div>

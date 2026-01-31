@@ -19,9 +19,9 @@ export function Navbar() {
     if (userData || userSession) {
       // Mock data for now
       setUserXP({
-        currentXP: 350,
-        levelXP: 500,
-        level: 3
+        currentXP: 2450,
+        levelXP: 3000,
+        level: 8
       });
     }
   }, []);
@@ -70,24 +70,6 @@ export function Navbar() {
 
           {/* Desktop Right Section (CTA only) */}
           <div className="flex items-center gap-4">
-
-            {/* Guest Mode Button (Dev Only) */}
-            {!isLoggedIn && (
-              <button
-                onClick={() => {
-                  localStorage.setItem('userData', JSON.stringify({
-                    fullName: 'Guest Designer',
-                    username: 'guest',
-                    email: 'guest@kita.finance'
-                  }));
-                  localStorage.setItem('userProfiling', 'true');
-                  window.location.href = '/dashboard';
-                }}
-                className="hidden lg:block px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors"
-              >
-                Guest Mode 🕵️
-              </button>
-            )}
 
             {/* Profile/Login Button */}
             <Link

@@ -166,15 +166,12 @@ export default function CompleteProfile() {
 
         {/* Logo */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-hard-md">
-              <TrendingUp className="h-7 w-7 text-white" />
-            </div>
+          <div className="lg:hidden flex items-center justify-center mb-8">
             <div>
-              <h1 className="text-2xl font-extrabold text-white">KITA</h1>
-              <div className="flex items-center gap-1">
-                <Sparkles className="h-4 w-4 text-secondary-400" />
-                <span className="text-sm font-bold text-secondary-400">DeFi Options</span>
+              <h1 className="text-2xl font-extrabold text-white">KITA<span className="font-serif italic font-light tracking-wide text-[#f59e1b] bg-clip-border">finance</span></h1>
+              <div className="flex items-center gap-1 w-fit">
+                <Sparkles className="h-3.5 w-3.5 text-secondary-400" />
+                <span className="text-xs font-bold text-secondary-400">Powered by Thetanuts V4</span>
               </div>
             </div>
           </div>
@@ -214,15 +211,12 @@ export default function CompleteProfile() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0284C7] shadow-hard-md">
-              <TrendingUp className="h-6 w-6 text-white" />
-            </div>
+          <div className="flex items-center justify-center mb-6">
             <div>
-              <h1 className="text-xl font-extrabold text-[#0A4A7C]">KITA</h1>
+              <h1 className="text-xl font-extrabold text-[#0A4A7C]">KITA<span className="font-serif italic font-light tracking-wide text-[#f59e1b]">finance</span></h1>
               <div className="flex items-center gap-1">
                 <Sparkles className="h-3 w-3 text-secondary-500" />
-                <span className="text-xs font-bold text-secondary-600">DeFi Options</span>
+                <span className="text-xs font-bold text-secondary-600">Powered by Thetanuts V4</span>
               </div>
             </div>
           </div>

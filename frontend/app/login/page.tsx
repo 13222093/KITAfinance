@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { Sparkles, TrendingUp, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Sparkles, TrendingUp, Phone, ArrowRight, CheckCircle2, Zap } from "lucide-react";
 
 export default function Login() {
   const router = useRouter();
@@ -26,6 +26,14 @@ export default function Login() {
       router.push('/dashboard');
     }
   }, [router]);
+
+  const handleDemoAccount = () => {
+    // Auto-fill demo account credentials (backend has hardcoded OTP: 123456)
+    setFormData({
+      phoneNumber: "81234567890",
+      countryCode: "+62"
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,16 +94,11 @@ export default function Login() {
 
         {/* Logo */}
         <div className="relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-xl border-2 border-white/30">
-              <TrendingUp className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-white drop-shadow-lg">KITA</h1>
-              <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-[#FBFF2B]" />
-                <span className="text-sm font-bold text-white">DeFi Options</span>
-              </div>
+          <div>
+            <h1 className="text-3xl font-black text-white drop-shadow-lg">KITA<span className="font-serif italic font-light tracking-wide text-[#f59e1b] bg-clip-border">finance</span></h1>
+            <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-0.5 rounded-full backdrop-blur-sm w-fit">
+              <Sparkles className="h-3.5 w-3.5 text-[#FBFF2B]" />
+              <span className="text-xs font-bold text-white">Powered by Thetanuts V4</span>
             </div>
           </div>
         </div>
@@ -131,40 +134,37 @@ export default function Login() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 relative">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative">
         {/* Mobile Background Elements */}
         <div className="absolute inset-0 lg:hidden overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00FFF0] rounded-full blur-3xl opacity-20" />
+          <div className="absolute top-0 right-0 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-[#00FFF0] rounded-full blur-3xl opacity-20" />
         </div>
 
         <div className="w-full max-w-md relative z-10">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-xl border border-white/30">
-              <TrendingUp className="h-7 w-7 text-white" />
-            </div>
+          <div className="lg:hidden flex flex-col items-center justify-center mb-10">
             <div>
-              <h1 className="text-2xl font-black text-white drop-shadow-lg">KITA</h1>
-              <div className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full">
-                <Sparkles className="h-3 w-3 text-[#FBFF2B]" />
-                <span className="text-xs font-bold text-white">DeFi Options</span>
+              <h1 className="text-3xl sm:text-4xl font-black text-white drop-shadow-lg text-center">KITA<span className="font-serif italic font-light tracking-wide text-[#FBFF2B] bg-clip-border">finance</span></h1>
+              <div className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full w-fit">
+                <Sparkles className="h-3.5 w-3.5 text-[#FBFF2B]" />
+                <span className="text-xs font-bold text-white">Powered by Thetanuts V4</span>
               </div>
             </div>
           </div>
 
-          {/* Card */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-[2.5rem] p-8 shadow-2xl border-4 border-white/50">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-black text-[#0A4A7C] mb-2">
+          {/* Card - Only visible on desktop (lg+) */}
+          <div className="lg:bg-white/95 lg:backdrop-blur-sm lg:rounded-[2.5rem] lg:p-8 lg:shadow-2xl lg:border-4 lg:border-white/50">
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white lg:text-[#0A4A7C] mb-2 drop-shadow-lg lg:drop-shadow-none">
                 Selamat Datang! 👋
               </h2>
-              <p className="text-gray-500 font-bold">
+              <p className="text-sm sm:text-base text-white/90 lg:text-gray-500 font-bold">
                 Masuk ke akun KITA kamu untuk lanjut
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {error && (
                 <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-600 font-medium rounded-xl">
                   <AlertDescription>{error}</AlertDescription>
@@ -172,7 +172,7 @@ export default function Login() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber" className="text-[#0A4A7C] font-bold">Nomor Telepon</Label>
+                <Label htmlFor="phoneNumber" className="text-white lg:text-[#0A4A7C] font-bold drop-shadow lg:drop-shadow-none">Nomor Telepon</Label>
                 <div className="flex gap-3">
                   {/* Country Code Select */}
                   <div className="relative">
@@ -251,15 +251,30 @@ export default function Login() {
               </Button>
 
               {/* Divider */}
-              <div className="text-center pt-4 border-t-2 border-gray-100">
-                <p className="text-gray-500 font-medium">
+              <div className="text-center pt-4 border-t-2 border-white/20 lg:border-gray-100">
+                <p className="text-white lg:text-gray-500 font-medium">
                   Belum punya akun?{" "}
                   <Link
                     href="/onboarding"
-                    className="text-[#0A4A7C] hover:text-[#0A98FF] font-black underline underline-offset-4 decoration-2 decoration-[#00FFF0] hover:decoration-[#0A98FF] transition-all"
+                    className="text-[#00FFF0] lg:text-[#0A4A7C] hover:text-[#FBFF2B] lg:hover:text-[#0A98FF] font-black underline underline-offset-4 decoration-2 decoration-[#00FFF0] lg:decoration-[#00FFF0] hover:decoration-[#FBFF2B] lg:hover:decoration-[#0A98FF] transition-all"
                   >
                     Daftar sekarang
                   </Link>
+                </p>
+              </div>
+
+              {/* Demo Account Button */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleDemoAccount}
+                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all border-2 border-purple-300/50 flex items-center justify-center gap-2"
+                >
+                  <Zap className="h-5 w-5" />
+                  <span>Demo Account (OTP: 123456)</span>
+                </button>
+                <p className="text-xs text-white-500 text-center mt-2 font-medium">
+                  Langsung isi nomor demo dengan OTP 123456
                 </p>
               </div>
             </form>

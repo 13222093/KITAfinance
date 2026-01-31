@@ -2,10 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Home, Users, Award, Wallet, User, MessageCircle } from 'lucide-react';
 
 export function MobileNav() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const pathname = usePathname();
+
+    useEffect(() => {
+        // Check if user is logged in
+        const userData = localStorage.getItem('userData');
+        const userSession = localStorage.getItem('userSession');
+        setIsLoggedIn(!!userData || !!userSession);
+    }, []);
+
+    // Don't render bottom nav if user is not logged in
+    if (!isLoggedIn) {
+        return null;
+    }
+
 
     const navItems = [
         { name: 'Home', href: '/dashboard', icon: Home },

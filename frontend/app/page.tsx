@@ -138,7 +138,7 @@ export default function Home() {
               <p className="text-white/80 text-[10px] sm:text-xs md:text-sm mt-1 font-semibold leading-tight">Avg APY</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 border-2 border-white/20">
-              <p className="text-2xl sm:text-3xl md:text-4xl font-black text-[#C15BFF] drop-shadow-lg">1,250+</p>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFFFFF] drop-shadow-lg">1,250+</p>
               <p className="text-white/80 text-[10px] sm:text-xs md:text-sm mt-1 font-semibold leading-tight">Active Users</p>
             </div>
           </div>

@@ -219,11 +219,11 @@ export default function Dashboard() {
               {/* Level Badge/Avatar */}
               <div className="relative">
                 <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#FBFF2B] via-[#FFBC57] to-[#FF9500] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl border-4 border-orange-200 transform hover:scale-110 hover:rotate-3 transition-all">
-                  <span className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">5</span>
+                  <span className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">8</span>
                 </div>
                 {/* XP Badge */}
                 <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#00FFF0] to-[#0A98FF] text-white text-xs font-black px-2 py-1 rounded-full border-2 border-white shadow-lg">
-                  LVL 5
+                  LVL 8
                 </div>
               </div>
 
@@ -238,12 +238,12 @@ export default function Dashboard() {
                 <div className="mb-2">
                   <div className="flex items-center justify-between text-xs md:text-sm text-gray-700 mb-1.5">
                     <span className="font-bold">XP Progress</span>
-                    <span className="font-bold">350 / 500 XP</span>
+                    <span className="font-bold">2,450 / 3,000 XP</span>
                   </div>
                   <div className="relative h-3 md:h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                     <div
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#00FFF0] via-[#0A98FF] to-[#C15BFF] rounded-full transition-all duration-500"
-                      style={{ width: '70%' }}
+                      style={{ width: '81.67%' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
                   </div>

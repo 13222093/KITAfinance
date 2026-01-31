@@ -33,16 +33,11 @@ export default function OnboardingWelcome() {
 
         {/* Logo */}
         <div className="relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-xl border-2 border-white/30">
-              <TrendingUp className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-white drop-shadow-lg">KITA</h1>
-              <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-[#FBFF2B]" />
-                <span className="text-sm font-bold text-white">DeFi Options</span>
-              </div>
+          <div>
+            <h1 className="text-3xl font-black text-white drop-shadow-lg">KITA<span className="font-serif italic font-light tracking-wide text-[#f59e1b] bg-clip-border">finance</span></h1>
+            <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-0.5 rounded-full backdrop-blur-sm w-fit">
+              <Sparkles className="h-3.5 w-3.5 text-[#FBFF2B]" />
+              <span className="text-xs font-bold text-white">Powered by Thetanuts V4</span>
             </div>
           </div>
         </div>
@@ -78,40 +73,37 @@ export default function OnboardingWelcome() {
       </div>
 
       {/* Right Panel - Welcome Card */}
-      <div className="flex-1 flex items-center justify-center p-8 relative">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative">
         {/* Mobile Background Elements */}
         <div className="absolute inset-0 lg:hidden overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00FFF0] rounded-full blur-3xl opacity-20" />
+          <div className="absolute top-0 right-0 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-20" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-[#00FFF0] rounded-full blur-3xl opacity-20" />
         </div>
 
         <div className="w-full max-w-md relative z-10">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-xl border border-white/30">
-              <TrendingUp className="h-7 w-7 text-white" />
-            </div>
+          <div className="lg:hidden flex flex-col items-center justify-center mb-10">
             <div>
-              <h1 className="text-2xl font-black text-white drop-shadow-lg">KITA</h1>
-              <div className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full">
-                <Sparkles className="h-3 w-3 text-[#FBFF2B]" />
-                <span className="text-xs font-bold text-white">DeFi Options</span>
+              <h1 className="text-3xl sm:text-4xl font-black text-white drop-shadow-lg text-center">KITA<span className="font-serif italic font-light tracking-wide text-[#FBFF2B] bg-clip-border">finance</span></h1>
+              <div className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full w-fit">
+                <Sparkles className="h-3.5 w-3.5 text-[#FBFF2B]" />
+                <span className="text-xs font-bold text-white">Powered by Thetanuts V4</span>
               </div>
             </div>
           </div>
 
-          {/* Card */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-[2.5rem] p-8 shadow-2xl border-4 border-white/50 transform hover:scale-[1.01] transition-transform duration-300">
-            <div className="text-center mb-8">
+          {/* Card - Only visible on desktop (lg+) */}
+          <div className="lg:bg-white/95 lg:backdrop-blur-sm lg:rounded-[2.5rem] lg:p-8 lg:shadow-2xl lg:border-4 lg:border-white/50 lg:transform lg:hover:scale-[1.01] lg:transition-transform lg:duration-300">
+            <div className="text-center mb-6 sm:mb-8">
               {/* Icon Badge */}
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-[#0A98FF] to-[#04877f] rounded-3xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] lg:from-[#0A98FF] lg:to-[#04877f] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-6 transition-transform border-4 border-white/30">
                 <Zap className="h-12 w-12 text-white" />
               </div>
 
-              <h2 className="text-3xl font-black text-[#0A4A7C] mb-3">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white lg:text-[#0A4A7C] mb-3 drop-shadow-lg lg:drop-shadow-none">
                 Selamat Datang di KITA! 🎉
               </h2>
-              <p className="text-gray-500 font-bold">
+              <p className="text-sm sm:text-base text-white/90 lg:text-gray-500 font-bold">
                 Platform DeFi options terpercaya untuk kamu
               </p>
             </div>
@@ -124,7 +116,7 @@ export default function OnboardingWelcome() {
                 "👥 Nabung bareng di group vault",
                 "📊 Built on Base - Cepat & Murah"
               ].map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 text-gray-700 bg-blue-50/50 p-3 rounded-xl border border-blue-50 hover:bg-blue-50 transition-colors">
+                <div key={i} className="flex items-center gap-3 text-white lg:text-gray-700 bg-white/10 lg:bg-blue-50/50 backdrop-blur-sm p-3 rounded-xl border border-white/20 lg:border-blue-50 hover:bg-white/20 lg:hover:bg-blue-50 transition-colors">
                   <CheckCircle2 className="h-5 w-5 text-[#0A98FF] flex-shrink-0" />
                   <span className="text-sm font-bold">{feature}</span>
                 </div>
