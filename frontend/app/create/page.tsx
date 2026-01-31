@@ -5,7 +5,7 @@ import { Navbar } from '../../components/Navbar';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther } from 'viem';
 import { CONTRACTS } from '../../lib/config'; // Import alamat kontrak
-import { NUNGGU_ABI } from '../../lib/abi';   // Import ABI (Kamus bahasa mesin)
+import { KITA_VAULT_ABI } from '../../lib/abi';   // Import ABI (Kamus bahasa mesin)
 
 export default function CreatePosition() {
   // 1. Ambil data wallet user
@@ -44,7 +44,7 @@ export default function CreatePosition() {
       // Manggil Smart Contract
       writeContract({
         address: CONTRACTS.VAULT_ADDRESS, // Alamat Contract dari config.ts
-        abi: NUNGGU_ABI,                  // ABI dari abi.ts
+        abi: KITA_VAULT_ABI,                  // ABI dari abi.ts
         functionName: 'createPosition',
         args: [
           parseEther(amount),             // Arg 1: Collateral (Jumlah Deposit)
@@ -158,10 +158,10 @@ export default function CreatePosition() {
               onClick={handleExecute}
               disabled={isPending || isConfirming || !amount || !targetPrice}
               className={`w-full py-5 rounded-2xl font-black text-lg transition-all transform active:scale-[0.98] active:translate-y-1 border-b-4 border-black/10 active:border-b-0 ${!isConnected
-                  ? 'bg-red-500 text-white hover:bg-red-600 shadow-xl'
-                  : (isPending || isConfirming)
-                    ? 'bg-gray-200 text-gray-400 cursor-wait'
-                    : 'bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white hover:shadow-[0_8px_0_0_#D97706] shadow-[0_6px_0_0_#D97706]'
+                ? 'bg-red-500 text-white hover:bg-red-600 shadow-xl'
+                : (isPending || isConfirming)
+                  ? 'bg-gray-200 text-gray-400 cursor-wait'
+                  : 'bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white hover:shadow-[0_8px_0_0_#D97706] shadow-[0_6px_0_0_#D97706]'
                 }`}
             >
               {!isConnected

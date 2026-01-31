@@ -35,7 +35,7 @@ export function useExecuteOrder() {
             // Simplified order structure for demo
             const orderData = {
                 maker: order.maker || address,
-                asset: order.asset === 'BTC' ? '0x0000000000000000000000000000000000000001' : '0x0000000000000000000000000000000000000002',
+                asset: (order.asset === 'BTC' ? '0x0000000000000000000000000000000000000001' : '0x0000000000000000000000000000000000000002') as `0x${string}`,
                 strikePrice: parseUnits(order.strikePrice, 8), // 8 decimals for price
                 expiry: BigInt(order.expiry),
                 premium: expectedPremium,
