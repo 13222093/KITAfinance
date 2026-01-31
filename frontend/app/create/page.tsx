@@ -42,15 +42,25 @@ export default function CreatePosition() {
       console.log("Mengirim transaksi ke Blockchain...");
 
       // Manggil Smart Contract
+      const orderData = {
+        maker: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        asset: '0x0000000000000000000000000000000000000001' as `0x${string}`,
+        strikePrice: BigInt(Math.floor(parseFloat(targetPrice) * 1e8)),
+        expiry: BigInt(Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60), // 7 days
+        premium: BigInt(Math.floor(parseFloat(amount) * 0.015 * 1e6)), // 1.5% premium
+        isCall: false,
+        isLong: false
+      };
+
       writeContract({
         address: CONTRACTS.VAULT_ADDRESS, // Alamat Contract dari config.ts
         abi: KITA_VAULT_ABI,                  // ABI dari abi.ts
-        functionName: 'createPosition',
+        functionName: 'executeOrder',
         args: [
-          parseEther(amount),             // Arg 1: Collateral (Jumlah Deposit)
-          parseEther(targetPrice),        // Arg 2: Target Price (Strike)
-          BigInt(7 * 24 * 60 * 60),       // Arg 3: Durasi (7 Hari dalam detik)
-          false                           // Arg 4: Auto Roll (False dulu)
+          orderData,
+          '0x' as `0x${string}`, // Signature
+          BigInt(Math.floor(parseFloat(amount) * 1e6)), // Collateral amount (USDC has 6 decimals)
+          BigInt(Math.floor(parseFloat(amount) * 0.015 * 1e6)), // Expected premium
         ],
       });
 
