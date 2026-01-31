@@ -2,15 +2,24 @@
 
 import { Navbar } from '@/components/Navbar';
 import { ChatBot } from '@/components/ChatBot';
-import { Users, TrendingUp, Clock, DollarSign, Calendar, Award, ArrowLeft, Share2, Settings, MessageCircle, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Users, TrendingUp, Clock, DollarSign, Calendar, Award, ArrowLeft, Share2, Settings, MessageCircle, CheckCircle, ThumbsUp, ThumbsDown, Loader2, ArrowRight, Zap, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function GroupDetail({ params }: { params: { id: string } }) {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showVotingModal, setShowVotingModal] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showProposalModal, setShowProposalModal] = useState(false);
   const [selectedVote, setSelectedVote] = useState<'accept' | 'reject' | null>(null);
   const [userSelectedStrategy, setUserSelectedStrategy] = useState<string | null>(null);
+  const [depositStep, setDepositStep] = useState(1); // 1=amount, 2=approve, 3=deposit
+  const [depositAmount, setDepositAmount] = useState('');
+  const [isApproving, setIsApproving] = useState(false);
+  const [isDepositing, setIsDepositing] = useState(false);
+  const [proposalType, setProposalType] = useState('EXECUTE_STRATEGY');
+  const [proposalTitle, setProposalTitle] = useState('');
+  const [proposalDescription, setProposalDescription] = useState('');
 
   // Dummy data
   const group = {
@@ -561,6 +570,129 @@ export default function GroupDetail({ params }: { params: { id: string } }) {
               <button className="w-full flex items-center justify-center gap-3 p-4 bg-green-500/20 text-green-400 rounded-xl hover:bg-green-500/30 transition-colors">
                 <MessageCircle className="w-5 h-5" />
                 <span className="font-semibold">Share via WhatsApp</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DEPOSIT MODAL */}
+      {showDepositModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDepositModal(false)} />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-[#0A4A7C] to-[#0284C7] p-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-black text-white">Contribute to Group</h3>
+                <button onClick={() => setShowDepositModal(false)} className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-white/30 transition-all">
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+              <div className="flex items-center gap-2 mt-6">
+                {[1, 2, 3].map((step) => (
+                  <div key={step} className="flex-1 flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${depositStep >= step ? 'bg-white text-[#0A4A7C]' : 'bg-white/20 text-white/60'}`}>
+                      {depositStep > step ? <CheckCircle className="w-5 h-5" /> : step}
+                    </div>
+                    {step < 3 && <div className={`flex-1 h-1 rounded ${depositStep > step ? 'bg-white' : 'bg-white/20'}`} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="p-6 md:p-8">
+              {depositStep === 1 && (
+                <div className="space-y-6">
+                  <h4 className="text-xl font-black text-[#0A4A7C]">Enter Amount</h4>
+                  <div className="bg-gray-50 rounded-2xl p-6">
+                    <p className="text-sm text-gray-600 mb-2">Group: <span className="font-bold text-[#0A4A7C]">{group.name}</span></p>
+                    <p className="text-sm text-gray-600 mb-4">Your target contribution: <span className="font-bold text-[#0A4A7C]">{(group.targetAmount / group.members / 1000000).toFixed(2)} USDC</span></p>
+                    <input type="number" value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} placeholder="Enter USDC amount" className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-semibold text-lg focus:border-[#0A98FF] focus:outline-none" />
+                  </div>
+                  <button onClick={() => setDepositStep(2)} disabled={!depositAmount} className="w-full bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(255,149,0,0.4)] hover:shadow-[0_8px_0_0_rgba(255,149,0,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(255,149,0,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next: Approve USDC
+                  </button>
+                </div>
+              )}
+              {depositStep === 2 && (
+                <div className="space-y-6">
+                  <h4 className="text-xl font-black text-[#0A4A7C]">Approve USDC</h4>
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#0A98FF] to-[#00FFF0] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <p className="text-sm text-blue-800 font-semibold">Approve GroupVault to use your USDC</p>
+                  </div>
+                  <button onClick={() => { setIsApproving(true); setTimeout(() => { setIsApproving(false); setDepositStep(3); }, 2000); }} disabled={isApproving} className="w-full bg-gradient-to-r from-[#0A98FF] to-[#00FFF0] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(10,152,255,0.4)] hover:shadow-[0_8px_0_0_rgba(10,152,255,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(10,152,255,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    {isApproving ? <><Loader2 className="w-5 h-5 animate-spin" />Approving...</> : 'Approve USDC'}
+                  </button>
+                </div>
+              )}
+              {depositStep === 3 && (
+                <div className="space-y-6">
+                  <h4 className="text-xl font-black text-[#0A4A7C]">Confirm Deposit</h4>
+                  <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Zap className="w-8 h-8 text-white" />
+                    </div>
+                    <p className="text-sm text-green-800 font-semibold mb-2">Ready to deposit!</p>
+                    <p className="text-xs text-green-600">You will deposit {depositAmount} USDC to {group.name}</p>
+                  </div>
+                  <button onClick={() => { setIsDepositing(true); setTimeout(() => { setIsDepositing(false); setShowDepositModal(false); setDepositStep(1); }, 2000); }} disabled={isDepositing} className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(5,150,105,0.4)] hover:shadow-[0_8px_0_0_rgba(5,150,105,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(5,150,105,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    {isDepositing ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Depositing...
+                      </>
+                    ) : (
+                      <>
+                        Deposit to Group
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div >
+      )
+      }
+
+      {/* PROPOSAL MODAL */}
+      {showProposalModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowProposalModal(false)} />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-[#C15BFF] to-[#9333EA] p-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-black text-white">Create Proposal</h3>
+                <button onClick={() => setShowProposalModal(false)} className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-white/30 transition-colors">
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            </div>
+            <div className="p-6 md:p-8 space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Proposal Type</label>
+                <select value={proposalType} onChange={(e) => setProposalType(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-semibold focus:border-[#C15BFF] focus:outline-none">
+                  <option value="EXECUTE_STRATEGY">Execute Strategy</option>
+                  <option value="WITHDRAW">Withdraw Funds</option>
+                  <option value="ADD_MEMBER">Add Member</option>
+                  <option value="REMOVE_MEMBER">Remove Member</option>
+                  <option value="CHANGE_ADMIN">Change Admin</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Title</label>
+                <input type="text" value={proposalTitle} onChange={(e) => setProposalTitle(e.target.value)} placeholder="Enter proposal title" className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-semibold focus:border-[#C15BFF] focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
+                <textarea value={proposalDescription} onChange={(e) => setProposalDescription(e.target.value)} placeholder="Describe your proposal" rows={4} className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-semibold focus:border-[#C15BFF] focus:outline-none resize-none" />
+              </div>
+              <button disabled={!proposalTitle || !proposalDescription} className="w-full bg-gradient-to-r from-[#C15BFF] to-[#9333EA] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(147,51,234,0.4)] hover:shadow-[0_8px_0_0_rgba(147,51,234,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(147,51,234,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                Create Proposal
+                <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>

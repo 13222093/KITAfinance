@@ -9,7 +9,7 @@ import { useState } from 'react';
 export default function Vaults() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
 
-  // Dummy data untuk vaults
+  // Dummy data untuk vaults - USDC only
   const vaults = [
     {
       id: 1,
@@ -21,28 +21,6 @@ export default function Vaults() {
       dailyYield: 1750,
       totalEarned: 525000,
       startDate: '10 Jan 2026',
-    },
-    {
-      id: 2,
-      name: 'USDT Vault',
-      strategy: 'Covered Call',
-      balance: 3000000,
-      apy: 7.2,
-      status: 'Active',
-      dailyYield: 590,
-      totalEarned: 295000,
-      startDate: '12 Jan 2026',
-    },
-    {
-      id: 3,
-      name: 'DAI Vault',
-      strategy: 'Cash-Secured Put',
-      balance: 2000000,
-      apy: 9.1,
-      status: 'Active',
-      dailyYield: 500,
-      totalEarned: 150000,
-      startDate: '15 Jan 2026',
     },
   ];
 

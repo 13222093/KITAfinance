@@ -2,13 +2,56 @@
 
 import { Navbar } from '@/components/Navbar';
 import { ChatBot } from '@/components/ChatBot';
-import { ArrowLeft, Wallet, TrendingUp, AlertCircle, Shield, DollarSign, Target } from 'lucide-react';
+import { ArrowLeft, Wallet, TrendingUp, AlertCircle, Shield, DollarSign, Target, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function CoveredCall() {
-  const [amount, setAmount] = useState('');
-  const [selectedAsset, setSelectedAsset] = useState('ETH');
+  // USDC to Rupiah conversion
+  const USDC_TO_IDR = 15800;
+  const toRupiah = (usdc: number) => (usdc * USDC_TO_IDR).toLocaleString('id-ID');
+
+  // Mock realistic orders (Covered Call = isCall:true, isLong:false)
+  const mockOrders = [
+    {
+      asset: 'ETH',
+      strikePrice: '3900',
+      premium: '145',
+      expiry: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+      apy: '8.2',
+      collateralRequired: '3520',
+      currentPrice: '3520'
+    },
+    {
+      asset: 'BTC',
+      strikePrice: '105000',
+      premium: '980',
+      expiry: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+      apy: '7.5',
+      collateralRequired: '98500',
+      currentPrice: '98500'
+    },
+    {
+      asset: 'ETH',
+      strikePrice: '4200',
+      premium: '118',
+      expiry: Math.floor(Date.now() / 1000) + (21 * 24 * 60 * 60),
+      apy: '9.8',
+      collateralRequired: '3520',
+      currentPrice: '3520'
+    },
+    {
+      asset: 'BTC',
+      strikePrice: '110000',
+      premium: '850',
+      expiry: Math.floor(Date.now() / 1000) + (21 * 24 * 60 * 60),
+      apy: '10.2',
+      collateralRequired: '98500',
+      currentPrice: '98500'
+    },
+  ];
+
+  const [selectedAsset, setSelectedAsset] = useState('all');
 
   const strategyInfo = {
     name: 'Covered Call Vault',
@@ -16,14 +59,7 @@ export default function CoveredCall() {
     description: 'Hasilkan yield dari aset yang kamu punya dengan strategi covered call. Cocok untuk long-term holder yang mau dapat passive income.',
     apy: '6-10%',
     risk: 'Low',
-    minInvestment: 2000000,
   };
-
-  const assets = [
-    { symbol: 'ETH', name: 'Ethereum', currentAPY: 7.8, available: true },
-    { symbol: 'BTC', name: 'Bitcoin', currentAPY: 6.5, available: true },
-    { symbol: 'SOL', name: 'Solana', currentAPY: 9.2, available: true },
-  ];
 
   const benefits = [
     { icon: Wallet, title: 'Passive Income', description: 'Aset tetap di tanganmu sambil dapat yield rutin' },
@@ -38,11 +74,6 @@ export default function CoveredCall() {
     { step: 3, title: 'Terima Premium', description: 'Dapat premium sebagai passive income bulanan' },
     { step: 4, title: 'Aset Tetap Aman', description: 'Jika harga tidak naik drastis, aset tetap di tanganmu' },
   ];
-
-  const estimatedReturns = amount ? {
-    monthly: parseFloat(amount) * 0.006,
-    yearly: parseFloat(amount) * 0.072,
-  } : null;
 
   return (
     <>
@@ -60,19 +91,19 @@ export default function CoveredCall() {
 
         <div className="relative z-10 max-w-7xl mx-auto space-y-8">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-3 md:gap-4 mb-4">
             <Link
               href="/dashboard"
-              className="group w-12 h-12 bg-white/95 backdrop-blur-sm border-2 border-white/50 rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+              className="group w-12 h-12 md:w-14 md:h-14 bg-white/95 backdrop-blur-sm border-2 border-white/50 rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 hover:-translate-y-1 transition-all duration-300"
             >
-              <ArrowLeft className="w-6 h-6 text-[#0A4A7C] group-hover:-translate-x-1 transition-transform" />
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-[#0A4A7C] group-hover:-translate-x-1 transition-transform" />
             </Link>
             <div>
               <div className="inline-block bg-gradient-to-r from-green-400 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-1 shadow-md">
-                STRATEGY
+                STRATEGI
               </div>
-              <h1 className="text-4xl font-black text-white drop-shadow-lg">{strategyInfo.title}</h1>
-              <p className="text-white/90 font-medium">{strategyInfo.name}</p>
+              <h1 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg">{strategyInfo.title}</h1>
+              <p className="text-sm md:text-base text-white/90 font-medium">{strategyInfo.name}</p>
             </div>
           </div>
 
@@ -80,19 +111,19 @@ export default function CoveredCall() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               {/* Strategy Overview */}
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-4 border-white/50">
-                <div className="flex items-start gap-6 mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform">
-                    <Wallet className="w-10 h-10 text-white" />
+              <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/50">
+                <div className="flex items-start gap-4 md:gap-6 mb-6">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform flex-shrink-0">
+                    <Wallet className="w-8 h-8 md:w-10 md:h-10 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-black text-[#0A4A7C] mb-2">Tentang Strategi</h2>
-                    <p className="text-gray-600 font-medium leading-relaxed mb-6">{strategyInfo.description}</p>
-                    <div className="flex items-center gap-3">
-                      <span className="px-4 py-2 bg-green-100 text-green-700 font-bold rounded-xl border border-green-200">
+                    <h2 className="text-xl md:text-2xl font-black text-[#0A4A7C] mb-2">Tentang Strategi</h2>
+                    <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed mb-4 md:mb-6">{strategyInfo.description}</p>
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                      <span className="px-3 md:px-4 py-1.5 md:py-2 bg-green-100 text-green-700 font-bold text-xs md:text-sm rounded-xl border border-green-200">
                         APY {strategyInfo.apy}
                       </span>
-                      <span className="px-4 py-2 bg-green-100 text-green-700 font-bold rounded-xl border border-green-200">
+                      <span className="px-3 md:px-4 py-1.5 md:py-2 bg-green-100 text-green-700 font-bold text-xs md:text-sm rounded-xl border border-green-200">
                         Risk: {strategyInfo.risk}
                       </span>
                     </div>
@@ -156,83 +187,114 @@ export default function CoveredCall() {
               </div>
             </div>
 
-            {/* Sidebar - Investment Form */}
+            {/* ORDER SELECTION SECTION */}
             <div className="lg:col-span-1">
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border-4 border-white/50 sticky top-24">
-                <h2 className="text-2xl font-black text-[#0A4A7C] mb-6">Mulai Investasi</h2>
+              <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/50 sticky top-24">
+                <h2 className="text-xl md:text-2xl font-black text-[#0A4A7C] mb-2">Pilih Order Kamu</h2>
+                <p className="text-sm md:text-base text-gray-600 font-medium mb-4 md:mb-6">Jual covered call untuk passive income. Harga dalam USDC, konversi Rupiah otomatis.</p>
 
-                {/* Asset Selection */}
-                <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-500 mb-3">Pilih Aset</label>
-                  <div className="space-y-3">
-                    {assets.map((asset) => (
-                      <button
-                        key={asset.symbol}
-                        onClick={() => setSelectedAsset(asset.symbol)}
-                        className={`w-full p-4 rounded-xl transition-all text-left border-2 ${selectedAsset === asset.symbol
-                            ? 'bg-green-50 border-green-500 shadow-lg'
-                            : 'bg-white border-gray-100 hover:bg-gray-50'
-                          }`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`font-bold ${selectedAsset === asset.symbol ? 'text-[#0A4A7C]' : 'text-gray-700'}`}>{asset.symbol}</span>
-                          <span className="text-xs text-green-600 font-bold bg-green-100 px-2 py-1 rounded-lg">{asset.currentAPY}% APY</span>
+                {/* Asset Filter */}
+                <div className="flex gap-2 md:gap-3 mb-6 md:mb-8 flex-wrap">
+                  <button
+                    onClick={() => setSelectedAsset('all')}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm transition-all ${selectedAsset === 'all'
+                        ? 'bg-gradient-to-r from-green-400 to-emerald-600 text-white shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                  >
+                    Semua ({mockOrders.length})
+                  </button>
+                  <button
+                    onClick={() => setSelectedAsset('BTC')}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm transition-all ${selectedAsset === 'BTC'
+                        ? 'bg-gradient-to-r from-[#FFBC57] to-[#FF9500] text-white shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                  >
+                    Bitcoin ₿
+                  </button>
+                  <button
+                    onClick={() => setSelectedAsset('ETH')}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm transition-all ${selectedAsset === 'ETH'
+                        ? 'bg-gradient-to-r from-[#A855F7] to-[#9333EA] text-white shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                  >
+                    Ethereum Ξ
+                  </button>
+                </div>
+
+                {/* Order Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {mockOrders
+                    .filter(order => selectedAsset === 'all' || order.asset === selectedAsset)
+                    .map((order, index) => {
+                      const gradientConfigs = [
+                        { border: 'border-green-300', badge: 'bg-green-100 text-green-700 border-green-300' },
+                        { border: 'border-emerald-300', badge: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+                        { border: 'border-teal-300', badge: 'bg-teal-100 text-teal-700 border-teal-300' },
+                      ];
+                      const config = gradientConfigs[index % 3];
+                      const premium = parseFloat(order.premium);
+                      const collateral = parseFloat(order.collateralRequired);
+
+                      return (
+                        <div
+                          key={index}
+                          className={`group bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-6 shadow-xl border-3 md:border-4 ${config.border} hover:scale-[1.02] hover:-translate-y-1 transition-all`}
+                        >
+                          <div className="flex items-center justify-between mb-3 md:mb-4">
+                            <span className={`px-2.5 md:px-3 py-1 md:py-1.5 text-xs font-bold rounded-full border-2 ${config.badge}`}>
+                              {order.asset}
+                            </span>
+                            <span className="text-[10px] md:text-xs text-gray-500 font-semibold">Covered Call</span>
+                          </div>
+
+                          <div className="mb-3 md:mb-4">
+                            <p className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1 font-semibold">Harga Strike</p>
+                            <p className="text-2xl md:text-3xl font-black text-[#0A4A7C]">
+                              ${parseFloat(order.strikePrice).toLocaleString()}
+                            </p>
+                            <p className="text-[10px] md:text-xs text-gray-500 font-medium mt-0.5 md:mt-1">
+                              ≈ Rp {toRupiah(parseFloat(order.strikePrice))}
+                            </p>
+                            <p className="text-[10px] md:text-xs text-green-600 font-bold mt-1">
+                              Harga Sekarang: ${parseFloat(order.currentPrice).toLocaleString()}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+                            <div className="bg-green-50 rounded-lg md:rounded-xl p-2 md:p-3 border-2 border-green-200">
+                              <p className="text-[10px] md:text-xs text-green-700 mb-0.5 md:mb-1 font-bold">💰 Premium</p>
+                              <p className="text-sm md:text-base font-black text-green-600">{premium.toFixed(0)} USDC</p>
+                              <p className="text-[10px] md:text-xs text-green-600 font-medium">≈ Rp {toRupiah(premium)}</p>
+                            </div>
+                            <div className="bg-emerald-50 rounded-lg md:rounded-xl p-2 md:p-3 border-2 border-emerald-200">
+                              <p className="text-[10px] md:text-xs text-emerald-700 mb-0.5 md:mb-1 font-bold">📊 APY</p>
+                              <p className="text-sm md:text-base font-black text-emerald-600">{order.apy}%</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-lg md:rounded-xl p-2 md:p-3 border-2 border-gray-200">
+                              <p className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1 font-semibold">Collateral</p>
+                              <p className="text-xs md:text-sm font-black text-gray-700">{collateral.toFixed(0)} USDC</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-lg md:rounded-xl p-2 md:p-3 border-2 border-gray-200">
+                              <p className="text-[10px] md:text-xs text-gray-600 mb-0.5 md:mb-1 font-semibold">Deadline</p>
+                              <p className="text-xs md:text-sm font-black text-gray-700">
+                                {new Date(order.expiry * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            className="w-full bg-gradient-to-r from-green-400 to-emerald-600 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-sm md:text-base font-bold shadow-[0_4px_0_0_rgba(52,211,153,0.4)] md:shadow-[0_6px_0_0_rgba(52,211,153,0.4)] hover:shadow-[0_6px_0_0_rgba(52,211,153,0.4)] md:hover:shadow-[0_8px_0_0_rgba(52,211,153,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(52,211,153,0.4)] transition-all flex items-center justify-center gap-2"
+                          >
+                            Jual Call Ini
+                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
+                          </button>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium">{asset.name}</p>
-                      </button>
-                    ))}
-                  </div>
+                      );
+                    })}
                 </div>
-
-                {/* Amount Input */}
-                <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-500 mb-2">Jumlah Investasi</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
-                    <input
-                      type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder="2.000.000"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:bg-white transition-all font-bold"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2 font-medium">Minimal: Rp {(strategyInfo.minInvestment / 1000000).toFixed(1)}jt</p>
-                </div>
-
-                {/* Estimated Returns */}
-                {estimatedReturns && (
-                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl">
-                    <h3 className="text-sm font-bold text-green-600 mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" /> Estimasi Return
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500 font-medium">Per Bulan</span>
-                        <span className="text-[#0A4A7C] font-black">Rp {(estimatedReturns.monthly / 1000).toFixed(0)}rb</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500 font-medium">Per Tahun</span>
-                        <span className="text-green-600 font-black">Rp {(estimatedReturns.yearly / 1000000).toFixed(1)}jt</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Action Button */}
-                <button
-                  disabled={!amount || parseFloat(amount) < strategyInfo.minInvestment}
-                  className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg text-lg ${amount && parseFloat(amount) >= strategyInfo.minInvestment
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:scale-[1.02] hover:shadow-xl border-b-4 border-black/20 active:border-b-0 active:translate-y-1'
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-                >
-                  Mulai Investasi
-                </button>
-
-                <p className="text-xs text-center text-gray-400 mt-4 font-medium">
-                  Aset akan masuk ke Covered Call Vault
-                </p>
               </div>
             </div>
           </div>

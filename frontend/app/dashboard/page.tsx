@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/Navbar';
 import { ChatBot } from '@/components/ChatBot';
-import { TrendingUp, Wallet, Target, Award, ArrowUpRight, ArrowDownRight, Plus, Users, X, TrendingDown, DollarSign, Zap, Sparkles, Trophy, Coins, Rocket, Heart, Star } from 'lucide-react';
+import { TrendingUp, Wallet, Target, Award, ArrowUpRight, ArrowDownRight, Plus, Users, X, TrendingDown, DollarSign, Zap, Sparkles, Trophy, Coins, Rocket, Heart, Star, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,10 @@ interface Position {
 export default function Dashboard() {
   const router = useRouter();
   const [showSoloModal, setShowSoloModal] = useState(false);
+  const [showPositionModal, setShowPositionModal] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isSettling, setIsSettling] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
 
@@ -92,6 +96,31 @@ export default function Dashboard() {
   const stats = userData?.stats || defaultStats;
   const positions = userData?.positions || [];
   // const recentActivities = userData?.history || []; // Backend not sending history yet, keep dummy or empty
+
+  const handleClosePosition = async (positionId: number) => {
+    setIsClosing(true);
+    // TODO: Implement close position transaction
+    setTimeout(() => {
+      setIsClosing(false);
+      setShowPositionModal(false);
+      // Refresh positions
+    }, 2000);
+  };
+
+  const handleSettlePosition = async (positionId: number) => {
+    setIsSettling(true);
+    // TODO: Implement settle position transaction
+    setTimeout(() => {
+      setIsSettling(false);
+      setShowPositionModal(false);
+      // Refresh positions
+    }, 2000);
+  };
+
+  const handleViewDetails = (position: Position) => {
+    setSelectedPosition(position);
+    setShowPositionModal(true);
+  };
 
   const soloStrategies = [
     {
@@ -461,7 +490,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Mini chart placeholder */}
-                    <div className="h-12 bg-gray-100 rounded-xl flex items-end gap-1 px-2 overflow-hidden">
+                    <div className="h-12 bg-gray-100 rounded-xl flex items-end gap-1 px-2 overflow-hidden mb-4">
                       {[40, 60, 45, 75, 50, 80, 65, 90].map((height, i) => (
                         <div
                           key={i}
@@ -472,6 +501,32 @@ export default function Dashboard() {
                           }}
                         />
                       ))}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      {position.status === 'Active' && (
+                        <button
+                          onClick={() => handleClosePosition(position.id)}
+                          className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#F97316] text-white px-3 py-2 rounded-xl font-bold text-sm shadow-[0_4px_0_0_rgba(249,115,22,0.4)] hover:shadow-[0_6px_0_0_rgba(249,115,22,0.4)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(249,115,22,0.4)] transition-all"
+                        >
+                          Close
+                        </button>
+                      )}
+                      {position.status === 'Expired' && (
+                        <button
+                          onClick={() => handleSettlePosition(position.id)}
+                          className="flex-1 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-3 py-2 rounded-xl font-bold text-sm shadow-[0_4px_0_0_rgba(5,150,105,0.4)] hover:shadow-[0_6px_0_0_rgba(5,150,105,0.4)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(5,150,105,0.4)] transition-all"
+                        >
+                          Settle
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleViewDetails(position)}
+                        className="px-4 bg-white/10 backdrop-blur-md border-2 border-gray-300 text-[#0A4A7C] rounded-xl font-bold text-sm hover:bg-gray-100 transition-all"
+                      >
+                        Details
+                      </button>
                     </div>
                   </div>
                 );
@@ -630,6 +685,65 @@ export default function Dashboard() {
           </div>
         )
       }
+
+      {/* POSITION DETAIL MODAL */}
+      {showPositionModal && selectedPosition && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowPositionModal(false)} />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-[#0A4A7C] to-[#0284C7] p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-2xl font-black text-white">{selectedPosition.name}</h3>
+                  <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 mt-2">
+                    {selectedPosition.status}
+                  </span>
+                </div>
+                <button onClick={() => setShowPositionModal(false)} className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-white/30 transition-all">
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            </div>
+            <div className="p-6 md:p-8 space-y-6">
+              <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 font-semibold">Collateral</span>
+                  <span className="font-black text-[#0A4A7C]">{(selectedPosition.balance / 1000000).toFixed(2)} USDC</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 font-semibold">Premium Received</span>
+                  <span className="font-black text-green-600">{((selectedPosition.balance * selectedPosition.apy) / 100 / 12).toFixed(2)} USDC</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 font-semibold">Aave Yield</span>
+                  <span className="font-black text-[#00FFF0]">{((selectedPosition.balance * 2.5) / 100 / 12).toFixed(2)} USDC</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 font-semibold">APY</span>
+                  <span className="font-black text-[#0A4A7C]">{selectedPosition.apy}%</span>
+                </div>
+                <div className="h-px bg-gray-300" />
+                <div className="flex justify-between">
+                  <span className="text-gray-600 font-bold">Total Return</span>
+                  <span className="font-black text-green-600 text-lg">{(((selectedPosition.balance * selectedPosition.apy) / 100 / 12) + ((selectedPosition.balance * 2.5) / 100 / 12)).toFixed(2)} USDC</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                {selectedPosition.status === 'Active' && (
+                  <button onClick={() => handleClosePosition(selectedPosition.id)} disabled={isClosing} className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#F97316] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(249,115,22,0.4)] hover:shadow-[0_8px_0_0_rgba(249,115,22,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(249,115,22,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    {isClosing ? <><Loader2 className="w-5 h-5 animate-spin" />Closing...</> : 'Close Position'}
+                  </button>
+                )}
+                {selectedPosition.status === 'Expired' && (
+                  <button onClick={() => handleSettlePosition(selectedPosition.id)} disabled={isSettling} className="flex-1 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-4 rounded-2xl font-bold shadow-[0_6px_0_0_rgba(5,150,105,0.4)] hover:shadow-[0_8px_0_0_rgba(5,150,105,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-[0_2px_0_0_rgba(5,150,105,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    {isSettling ? <><Loader2 className="w-5 h-5 animate-spin" />Settling...</> : 'Settle Position'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ChatBot />
     </>
