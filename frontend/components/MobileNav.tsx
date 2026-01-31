@@ -21,6 +21,17 @@ export function MobileNav() {
         return null;
     }
 
+    // Don't render during onboarding flow
+    if (pathname.startsWith('/onboarding')) {
+        return null;
+    }
+
+    // Don't render on landing, login pages
+    if (pathname === '/' || pathname === '/login') {
+        return null;
+    }
+
+
 
     const navItems = [
         { name: 'Home', href: '/dashboard', icon: Home },

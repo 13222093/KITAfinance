@@ -2,19 +2,20 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { ArrowLeft, User, Users, CheckCircle2, Sparkles, Trophy, Zap, Target } from 'lucide-react';
 
 export default function ChooseModePage() {
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
 
-  useEffect(() => { // Make sure user datang dari halaman ai profiling
+  useEffect(() => {
     const sessionStr = localStorage.getItem('userSession');
     const profilingData = localStorage.getItem('userProfiling');
     const userData = localStorage.getItem('userData');
 
     if (!sessionStr && !userData) {
-        router.push('/onboarding');
-        return;
+      router.push('/onboarding');
+      return;
     }
 
     if (!profilingData) {
@@ -28,149 +29,170 @@ export default function ChooseModePage() {
 
   const handleContinue = () => {
     if (!selectedMode) return;
-
     router.push('/onboarding/success');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12">
-        <button
-          onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800 mb-6 flex items-center"
-        >
-          <span className="text-xl mr-2">←</span> Kembali
-        </button>
+    <div className="min-h-screen bg-gradient-to-br from-[#0A4A7C] via-[#0A98FF] to-[#04877f] overflow-hidden relative">
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(10,152,255,0.3),transparent_50%)] animate-pulse" />
 
-        <div className="text-center mb-12">
-          <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full mb-4 border border-blue-500/30">
-            <span className="text-blue-600 text-body">Langkah Terakhir</span>
+      {/* Floating orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 right-10 w-64 h-64 bg-[#C15BFF] rounded-full blur-3xl opacity-30 animate-float" />
+        <div className="absolute bottom-20 left-10 w-80 h-80 bg-[#FBFF2B] rounded-full blur-3xl opacity-20 animate-float-delayed" />
+        <div className="absolute top-1/3 left-1/4 w-48 h-48 bg-[#00FFF0] rounded-full blur-3xl opacity-25 animate-float-slow" />
+      </div>
+
+      {/* Floating decorative icons */}
+      <div className="absolute top-24 left-8 animate-bounce" style={{ animationDelay: '0.2s' }}>
+        <div className="w-12 h-12 bg-gradient-to-br from-[#FBFF2B] to-[#FFBC57] rounded-xl flex items-center justify-center shadow-xl rotate-12">
+          <Trophy className="w-6 h-6 text-white" />
+        </div>
+      </div>
+      <div className="absolute top-32 right-12 animate-pulse" style={{ animationDelay: '0.5s' }}>
+        <div className="w-10 h-10 bg-gradient-to-br from-[#C15BFF] to-[#9333EA] rounded-lg flex items-center justify-center shadow-xl -rotate-12">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 py-16">
+        {/* Back Button */}
+        <div className="absolute top-6 left-4">
+          <button
+            onClick={() => router.back()}
+            className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg hover:bg-white/30 transition-all border border-white/30"
+          >
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </button>
+        </div>
+
+        {/* Header */}
+        <div className="text-center mb-8 max-w-lg">
+          <div className="inline-block bg-gradient-to-r from-[#FBFF2B] to-[#FFBC57] text-[#0A4A7C] px-4 py-1.5 rounded-full text-xs font-black mb-4 shadow-lg">
+            🎯 LANGKAH TERAKHIR
           </div>
-          <h1 className="text-heading text-gray-800 mb-3">
-            Pilih Mode Investasi Kamu
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-3 drop-shadow-lg">
+            Pilih Mode Kamu!
           </h1>
-          <p className="text-subheading text-gray-600">
-            Nabung sendiri atau ajak teman untuk nabung bareng
+          <p className="text-sm md:text-base text-white/90 font-medium">
+            Nabung sendiri atau ajak teman buat seru-seruan 🚀
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Mode Cards */}
+        <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8 px-2">
           {/* Solo Mode */}
           <button
             onClick={() => handleSelectMode('solo')}
-            className={`p-8 rounded-2xl border-2 transition-all duration-300 text-left ${selectedMode === 'solo'
-                ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
+            className={`relative p-5 md:p-6 rounded-2xl md:rounded-3xl text-left transition-all duration-300 ${selectedMode === 'solo'
+                ? 'bg-white shadow-2xl scale-[1.02] border-4 border-[#0A98FF]'
+                : 'bg-white/95 backdrop-blur-sm border-4 border-white/50 hover:scale-[1.01] hover:shadow-xl'
               }`}
           >
-            <div className="mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-3xl mb-4">
-                👤
-              </div>
-              <h3 className="text-subheading text-gray-800 mb-2">Nabung Solo</h3>
-              <p className="text-body text-gray-600 mb-4">Investasi mandiri dengan kontrol penuh</p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Kontrol penuh atas investasi kamu</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Fleksibel atur strategi sendiri</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Withdraw kapan saja</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Cocok untuk investor mandiri</span>
-              </div>
-            </div>
-
+            {/* Selection indicator */}
             {selectedMode === 'solo' && (
-              <div className="mt-6 pt-6 border-t border-blue-200">
-                <div className="flex items-center justify-center gap-2 text-blue-600 text-button">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Dipilih
-                </div>
+              <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-[#0A98FF] to-[#00FFF0] rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                <CheckCircle2 className="w-6 h-6 text-white" />
               </div>
             )}
+
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#0A98FF] to-[#0A4A7C] rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                <User className="w-7 h-7 md:w-8 md:h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-black text-[#0A4A7C] mb-1">Nabung Solo</h3>
+                <p className="text-sm text-gray-600 font-medium">Investasi mandiri, kontrol penuh 💪</p>
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              {[
+                { icon: Target, text: 'Kontrol penuh atas strategi' },
+                { icon: Zap, text: 'Withdraw kapan saja' },
+                { icon: Sparkles, text: 'Cocok untuk yang mandiri' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2.5">
+                  <div className="w-6 h-6 bg-[#0A98FF]/10 rounded-lg flex items-center justify-center">
+                    <item.icon className="w-3.5 h-3.5 text-[#0A98FF]" />
+                  </div>
+                  <span className="text-sm text-gray-700 font-medium">{item.text}</span>
+                </div>
+              ))}
+            </div>
           </button>
 
           {/* Group Mode */}
           <button
             onClick={() => handleSelectMode('group')}
-            className={`p-8 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden ${selectedMode === 'group'
-                ? 'border-purple-500 bg-purple-50 shadow-lg scale-105'
-                : 'border-gray-200 hover:border-purple-300 hover:shadow-md'
+            className={`relative p-5 md:p-6 rounded-2xl md:rounded-3xl text-left transition-all duration-300 ${selectedMode === 'group'
+                ? 'bg-white shadow-2xl scale-[1.02] border-4 border-[#C15BFF]'
+                : 'bg-white/95 backdrop-blur-sm border-4 border-white/50 hover:scale-[1.01] hover:shadow-xl'
               }`}
           >
-            <div className="absolute top-4 right-4">
-              <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold rounded-full">
-                POPULAR
-              </span>
+            {/* Popular Badge */}
+            <div className="absolute -top-3 left-4 px-3 py-1 bg-gradient-to-r from-[#C15BFF] to-[#FF6B9D] text-white text-xs font-black rounded-full shadow-lg animate-pulse">
+              🔥 POPULER
             </div>
 
-            <div className="mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-3xl mb-4">
-                👥
-              </div>
-              <h3 className="text-subheading text-gray-800 mb-2">Nabung Bareng</h3>
-              <p className="text-body text-gray-600 mb-4">Investasi bersama teman & komunitas</p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Ajak teman untuk gabung vault</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Bonus XP untuk setiap invite</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Kompetisi & leaderboard</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-500 mt-1">✓</span>
-                <span className="text-body text-gray-700">Lebih seru, lebih engaging!</span>
-              </div>
-            </div>
-
+            {/* Selection indicator */}
             {selectedMode === 'group' && (
-              <div className="mt-6 pt-6 border-t border-purple-200">
-                <div className="flex items-center justify-center gap-2 text-purple-600 text-button">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Dipilih
-                </div>
+              <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-[#C15BFF] to-[#FF6B9D] rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                <CheckCircle2 className="w-6 h-6 text-white" />
               </div>
             )}
+
+            <div className="flex items-start gap-4 mb-4 mt-2">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#C15BFF] to-[#9333EA] rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                <Users className="w-7 h-7 md:w-8 md:h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-black text-[#0A4A7C] mb-1">Nabung Bareng</h3>
+                <p className="text-sm text-gray-600 font-medium">Ajak teman, lebih seru! 🎉</p>
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              {[
+                { icon: Users, text: 'Ajak teman ke vault' },
+                { icon: Trophy, text: 'Kompetisi & leaderboard' },
+                { icon: Sparkles, text: 'Bonus XP setiap invite' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2.5">
+                  <div className="w-6 h-6 bg-[#C15BFF]/10 rounded-lg flex items-center justify-center">
+                    <item.icon className="w-3.5 h-3.5 text-[#C15BFF]" />
+                  </div>
+                  <span className="text-sm text-gray-700 font-medium">{item.text}</span>
+                </div>
+              ))}
+            </div>
           </button>
         </div>
 
+        {/* Continue Button */}
         <button
           onClick={handleContinue}
           disabled={!selectedMode}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-button py-4 px-6 rounded-xl hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          className={`w-full max-w-md py-4 rounded-2xl font-black text-lg transition-all ${selectedMode
+              ? 'bg-gradient-to-r from-[#0A98FF] to-[#C15BFF] text-white shadow-[0_6px_0_0_rgba(10,74,124,1)] hover:shadow-[0_4px_0_0_rgba(10,74,124,1)] hover:translate-y-0.5 active:shadow-[0_2px_0_0_rgba(10,74,124,1)] active:translate-y-1'
+              : 'bg-white/30 text-white/60 cursor-not-allowed'
+            }`}
         >
-          {selectedMode ? 'Lanjutkan' : 'Pilih Mode Terlebih Dahulu'}
+          {selectedMode ? (
+            <span className="flex items-center justify-center gap-2">
+              Lanjutkan
+              <Sparkles className="w-5 h-5" />
+            </span>
+          ) : (
+            'Pilih Mode Dulu Ya!'
+          )}
         </button>
+
+        {/* Helper text */}
+        <p className="text-white/60 text-xs mt-4 text-center max-w-md">
+          Kamu bisa ganti mode kapan saja dari halaman Settings 🔧
+        </p>
       </div>
     </div>
   );
