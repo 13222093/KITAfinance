@@ -42,8 +42,11 @@ async function main() {
         usdcAddress = BASE_MAINNET.USDC;
         aavePoolAddress = BASE_MAINNET.AAVE_POOL;
     } else if (network.chainId === 84532n) {
-        // Base Sepolia - for testing, might need to deploy mocks
+        // Base Sepolia - deploy mocks for testnet
         console.log("📍 Base Sepolia - deploying mock contracts first\n");
+
+        // Helper to wait between transactions (avoids nonce issues on slow RPC)
+        const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
         // Deploy Mock USDC
         const MockERC20 = await ethers.getContractFactory("MockERC20");
@@ -51,6 +54,7 @@ async function main() {
         await usdc.waitForDeployment();
         usdcAddress = await usdc.getAddress();
         console.log(`✅ Mock USDC: ${usdcAddress}`);
+        await sleep(5000); // Wait 5s for nonce to sync
 
         // Deploy Mock Aave
         const MockAave = await ethers.getContractFactory("MockAave");
@@ -58,11 +62,15 @@ async function main() {
         await aave.waitForDeployment();
         aavePoolAddress = await aave.getAddress();
         console.log(`✅ Mock Aave: ${aavePoolAddress}`);
+        await sleep(5000); // Wait 5s for nonce to sync
 
-        // For OptionBook, we need to use a placeholder or the real one if available
-        // Using deployer address as placeholder - won't work for actual trades
-        optionBookAddress = deployer.address;
-        console.log(`⚠️  Mock OptionBook: ${optionBookAddress} (placeholder)\n`);
+        // Deploy Mock OptionBook - real contract for testnet trading!
+        const MockOptionBook = await ethers.getContractFactory("MockOptionBook");
+        const optionBook = await MockOptionBook.deploy();
+        await optionBook.waitForDeployment();
+        optionBookAddress = await optionBook.getAddress();
+        console.log(`✅ Mock OptionBook: ${optionBookAddress}\n`);
+        await sleep(5000); // Wait 5s for nonce to sync
     } else {
         // Local hardhat network
         console.log("📍 Local network - deploying all mocks\n");
@@ -85,6 +93,9 @@ async function main() {
 
     // Deploy KITAVault
     console.log("📝 Deploying KITAVault...");
+    // Helper to wait between transactions (avoids nonce issues on slow RPC)
+    const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
     const KITAVault = await ethers.getContractFactory("KITAVault");
     const vault = await KITAVault.deploy(
         optionBookAddress,
@@ -95,6 +106,7 @@ async function main() {
     await vault.waitForDeployment();
     const vaultAddress = await vault.getAddress();
     console.log(`✅ KITAVault deployed: ${vaultAddress}`);
+    await sleep(5000); // Wait 5s for nonce to sync
 
     // Deploy GroupVault (Nabung Bareng)
     console.log("📝 Deploying GroupVault...");
